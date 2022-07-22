@@ -39,7 +39,8 @@ Requirements:
     ```
         pacman -Syu
         pacman -S gtk3 vala meson ninja json-glib
-        # now follow Linux instructions ...
+        meson build --buildtype=release --strip
+		meson install -C build
         ```
 ### MacOS
 

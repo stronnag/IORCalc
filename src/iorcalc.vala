@@ -358,8 +358,32 @@ public class IORCalc : Gtk.Application {
 		var b1 = new Gtk.Button.with_label ("Save to file");
 		var b2 = new Gtk.Button.with_label ("Print");
 		var b3 = new Gtk.Button.with_label ("Close");
-		b2.sensitive = false;
 
+
+		if(Environment.find_program_in_path("lp") != null) {
+			b1.clicked.connect(() => {
+					var fn = Util.mktempname();
+					IORData.pcert(udata, cdata, fn, 2);
+					try {
+						string[] args = {"lp", fn};
+						Pid pid;
+						Process.spawn_async ("/",
+											 args,
+											 null,
+											 SpawnFlags.SEARCH_PATH|SpawnFlags.DO_NOT_REAP_CHILD,
+											 null, out pid);
+						ChildWatch.add (pid, (pid, status) => {
+								Process.close_pid (pid);
+								FileUtils.unlink(fn);
+							});
+					} catch (SpawnError e) {
+						FileUtils.unlink(fn);
+						print ("Error: %s\n", e.message);
+					}
+				});
+		} else {
+			b2.sensitive = false;
+		}
 		b1.clicked.connect(() => {
 				var fn = run_chooser( Gtk.FileChooserAction.SAVE, "txt");
 				if (fn != null) {
