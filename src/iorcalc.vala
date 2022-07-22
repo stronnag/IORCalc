@@ -383,7 +383,6 @@ public class IORCalc : Gtk.Application {
 			try {
 				string buf;
 				if(FileUtils.get_contents(fn, out buf)) {
-					print(buf);
 					certview.buffer.text = buf;
 				}
 			} catch {}

@@ -61,7 +61,7 @@ static void write_file(char *fn, int opt) {
 		    break;
 	       }
 	       if (s1 != NULL) {
-		    char* np = index(s1,'\n');
+		    char* np = strchr(s1,'\n');
 		    if(np != NULL)
 			 *np = 0;
 		    fprintf(fp,"%-75s", s1);
