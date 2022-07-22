@@ -694,7 +694,7 @@ void ior_cert(char *cptr, ior_rec_t *u, calc_rec_t *c, char *lines[][2], int *pa
   cptr += ++n;
   lines[line++][1] = cptr;
 
-  n = sprintf(cptr, "%34c*\n", ' ');
+  n = sprintf(cptr, "%34chttps://github.com/stronnag/IORCalc\n", ' ');
   cptr += ++n;
   lines[line++][1] = cptr;
 
