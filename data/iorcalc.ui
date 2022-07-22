@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="menubar">
+    <!-- submenu>
+      <attribute name="label">_File</attribute -->
+      <section>
+	<item>
+          <attribute name="label">Open data file</attribute>
+          <attribute name="action">win.open</attribute>
+	  <attribute name="accel">&lt;Primary&gt;o</attribute>
+	</item>
+	<item>
+          <attribute name="label">Save data file</attribute>
+          <attribute name="action">win.save</attribute>
+	  <attribute name="accel">&lt;Primary&gt;s</attribute>
+	</item>
+	<item>
+          <attribute name="label">Save As data file</attribute>
+          <attribute name="action">win.saveas</attribute>
+	  <attribute name="accel">&lt;Primary&gt;a</attribute>
+	  </item>
+	  <item>
+            <attribute name="label">Calculate Rating</attribute>
+            <attribute name="action">win.calc</attribute>
+	    <attribute name="accel">&lt;Primary&gt;c</attribute>
+	  </item>
+	  <item>
+            <attribute name="label">Quit</attribute>
+            <attribute name="action">win.quit</attribute>
+	    <attribute name="accel">&lt;Primary&gt;q</attribute>
+	  </item>
+	</section>
+    <!-- /submenu -->
+  </menu>
+</interface>

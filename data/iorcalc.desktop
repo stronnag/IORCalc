@@ -1,0 +1,6 @@
+[Desktop Entry]
+Terminal=false
+Type=Application
+Name=IOR Rating Calculator
+Exec=iorcalc
+Icon=iorcalc
