@@ -44,7 +44,7 @@ public class IORCalc : Gtk.Application {
 		Object(application_id: "org.stronnag.iorcalc",
 			   flags: ApplicationFlags.HANDLES_COMMAND_LINE);
 
-		var options = new OptionEntry[] {
+		const OptionEntry[] options = {
 			{ "version", 'v', 0, OptionArg.NONE, null, "show version", null},
 			{null}
 		};
