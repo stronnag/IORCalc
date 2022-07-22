@@ -2,6 +2,8 @@
 
 ## Features
 
+*Calculate IOR ratings like it's 1988.*
+
 * Calculate IOR Ratings based in the 1988 IOR Rule
 * Input data as a JSON file
 * Graphical data editor
@@ -57,7 +59,9 @@ Requirements:
 
 ## Binary Release Media
 
-At some stage, a Debian package and a Windows package (either Zip or an Installer) will be available.
+There is a Debian package in the release area.
+
+At some stage, a Windows package (either Zip or an Installer) will be available.
 
 ## Miscellaneous
 
