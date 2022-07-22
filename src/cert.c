@@ -98,12 +98,12 @@ void ior_cert(char *cptr, ior_rec_t *u, calc_rec_t *c, char *lines[][2], int *pa
   cptr += ++n;
   lines[line++][0] = cptr;
 
-  n = sprintf(cptr, "      %-42sBY:-\n", "Owner" /*u->owner*/);
+  n = sprintf(cptr, "      %-42sBY:-\n", u->owner);
   cptr += ++n;
   lines[line++][0] = cptr;
 
   for (loop = 0; loop < 3; loop++) {
-       n = sprintf(cptr, "      %-28s\n", "Address" /*u->address[loop]*/);
+       n = sprintf(cptr, "      %-28s\n", u->address[loop]);
     cptr += ++n;
     lines[line++][0] = cptr;
   }

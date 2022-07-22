@@ -232,34 +232,41 @@ size_t editlist_length1 = (sizeof(editlist)/sizeof(edit_field_t) - 1);
 static char* attrs[] = {
      "yacht", "sail", "yr" , "loa" , "fgo", "ago", "fd",
      "cmd", "md", "omd", "bmax", "b", "bf", "bfi", "bai", "ba", "gd", "y",
-     "vhai", "vha", "bhai", "bha", "dmt", "sbmax", "sdm", "fss", "ffs",
-     "ffis", "ffds", "fbis", "fmds", "fbms", "fais", "fas", "dms", "ffm",
-     "fam", "bwl", "pl", "ifyr", "p", "e", "bas"};
+     "vhai", "vha", "sbmax", "sdm", "fss", "ffs",
+     "ffis", "ffds", "fbis", "fmds", "fais", "fas", "dms", "ffm",
+     "fam", "bwl", "pl", "p", "e", "bas"};
 
 bool is_data_valid(void *u) {
      edit_field_t *ep = NULL;
+     bool ret = true;
      for(int i = 0; i < sizeof(attrs) / sizeof(char*); i++) {
-	  if((ep = find_field_by_name(attrs[i], u)) == NULL)
-	       return false;
-	  switch(ep->flag) {
-	  case EDIT_TYPE_ED_C:
-	       if (*(char *)(u + ep->offset) == 0) {
-		    return false;
-	       }
-	       break;
-	  case EDIT_TYPE_ED_I:
-	       if (*(int*)(u + ep->offset) == 0) {
-		    return false;
-	       }
-	       break;
-	  case EDIT_TYPE_ED_F:
+	  if((ep = find_field_by_name(attrs[i], u)) == NULL) {
+	       ret = false;
+	  } else {
+	       switch(ep->flag) {
+	       case EDIT_TYPE_ED_C:
+		    if (*(char *)(u + ep->offset) == 0) {
+			 ret = false;
+		    }
+		    break;
+	       case EDIT_TYPE_ED_I:
+		    if (*(int*)(u + ep->offset) == 0) {
+			 ret = false;
+		    }
+		    break;
+	       case EDIT_TYPE_ED_F:
 	       if (*(double*)(u + ep->offset) == 0) {
-		    return false;
+		    ret = false;
 	       }
 	       break;
-	  case EDIT_TYPE_ED_T:
+	       case EDIT_TYPE_ED_T:
+		    return false;
+		    break;
+	       }
+	  }
+	  if (ret == false) {
+	       // stderr.printf("Failed to find or validate %s\n", attrs[i]);
 	       return false;
-	       break;
 	  }
      }
      return true;
