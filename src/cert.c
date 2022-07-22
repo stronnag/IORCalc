@@ -676,7 +676,7 @@ void ior_cert(char *cptr, ior_rec_t *u, calc_rec_t *c, char *lines[][2], int *pa
   cptr += ++n;
   lines[line++][1] = cptr;
 
-  strftime(tbuf, sizeof(tbuf), "%F %T", tm);
+  strftime(tbuf, sizeof(tbuf), "%Y-%m-%d %H:%M:%S", tm);
   n = sprintf(cptr, "%34cPrinted %s\n", ' ', tbuf);
 
   cptr += ++n;
