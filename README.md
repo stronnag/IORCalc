@@ -52,7 +52,7 @@ Requirements:
         # Build and install to ~/.local/bin (add to PATH if necessary)
         meson install -C build
    ```
-* If there are missing icons (specifically the +/- for time interval widget), it may be necessary to `brew install adwaita-icon-theme`.
+* If there are missing icons, it may be necessary to `brew install adwaita-icon-theme`.
 
 ## Binary Release Media
 
