@@ -10,8 +10,9 @@ static void show_error(char** buf, char *fmt, double var1, double var2) {
      if (var1 > var2) {
           int n = snprintf(lbuf, 256, fmt, var1, var2);
 	  lbuf[n++] = '\n';
-	  lbuf[n++] = 0;
-	  *buf = stpcpy(*buf, lbuf);
+	  lbuf[n] = 0;
+	  strcpy(*buf, lbuf);
+	  *buf += n;
      }
 }
 
