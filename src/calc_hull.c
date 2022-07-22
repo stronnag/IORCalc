@@ -1,7 +1,8 @@
 #include <math.h>
 #include <stdio.h>
-#include <sys/param.h>
 #include "iorext.h"
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
 
 void calc_hull(ior_rec_t *u, calc_rec_t *c) {
   int iz, n;
@@ -98,7 +99,7 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
   }
 
   if (c->ihy > 1979)
-    u->fs = MIN(u->fs, c->ff + (c->ff - c->ffi) * (u->fgo - u->sfs) / u->gsdf);
+    u->fs = fmin(u->fs, c->ff + (c->ff - c->ffi) * (u->fgo - u->sfs) / u->gsdf);
 
   if (u->bf > u->bfi)
     u->bf = u->bfi;
@@ -108,7 +109,7 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
     c->cffi = c->ff - c->ffi + (4 * c->fmd - c->fa - 3 * c->ff) * u->gsdf / c->lbg +
            (2 * c->ff - 4 * c->fmd + 2 * c->fa) * pow(u->gsdf / c->lbg, 2.0);
 
-    c->cffi = MAX(c->cffi, 0.0);
+    c->cffi = fmax(c->cffi, 0.0);
 
   } else
     c->cffi = 0;
@@ -122,7 +123,7 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
   if (ftop < 0.0 && fbot < 0.0)
     c->foc = -u->fgo;
 
-  c->foc = MIN(c->foc, 1.5 * u->gsdf * 0.25 * u->b / (0.25 * u->b + u->gdfi));
+  c->foc = fmin(c->foc, 1.5 * u->gsdf * 0.25 * u->b / (0.25 * u->b + u->gdfi));
 
   c->fdi = u->fd - c->ffd - c->ccor[0] * 2;
   c->mdi = u->md - c->fmd - c->ccor[2];
@@ -131,7 +132,7 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
 
   z = c->mdi + c->cmdi;
 
-  c->fdic = (c->fdi > 0.435 * z) ? MIN(0.475 * z, 0.2175 * z + .5 * c->fdi) : c->fdi;
+  c->fdic = (c->fdi > 0.435 * z) ? fmin(0.475 * z, 0.2175 * z + .5 * c->fdi) : c->fdi;
 
   c->mdia = (u->mdias > 0.0) ? u->mdias + (c->omdi / u->b) * (u->bwl + 0.75 * u->b) / 2.0
                          : 0.125 * (3.0 * c->cmdi + 2.0 * (c->mdi - c->omdi)) +
@@ -146,7 +147,7 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
       u->ba = u->bai;
 
     c->hgla = 0.5 * (0.75 * u->b + u->gd);
-    c->hgli = 0.5 * MAX(0.875 * u->b + u->gd, u->glai);
+    c->hgli = 0.5 * fmax(0.875 * u->b + u->gd, u->glai);
 
     c->agsl = u->gsda / (c->fa - c->fai - 0.2 * (u->bai - u->ba) + c->hgli - c->hgla);
 
@@ -160,16 +161,16 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
          : 0.4 * (0.9 * c->lbg + u->gd + u->y) /
                       (c->cmdi + c->mdi + 2.0 * (c->fa + u->vha - 2.0 * u->bha));
 
-    c->apsl = MIN(u->gsda / (u->vhai - u->vha + c->fa - c->fai), 7.0);
+    c->apsl = fmin(u->gsda / (u->vhai - u->vha + c->fa - c->fai), 7.0);
     if (c->apsl < 0.0)
       c->apsl = 6.0;
-    c->apslc = MAX(c->apsl, c->bapsl);
-    c->apslc = MIN(c->apslc, 7.0);
+    c->apslc = fmax(c->apsl, c->bapsl);
+    c->apslc = fmin(c->apslc, 7.0);
     if (c->agsl - 0.8 * c->apslc < 0.0) {
       c->acg2 = 0.8 * c->apslc *
                  (0.5 * (c->fa + c->fai - c->hgla - c->hgli) + 0.1 * (u->ba + u->bai)) +
              0.5 * u->gsda;
-      c->aocg = MIN(c->acg1, c->acg2);
+      c->aocg = fmin(c->acg1, c->acg2);
     } else {
       c->acg2 = 0.0;
       c->aocg = c->acg1;
@@ -177,23 +178,23 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
 
     c->ccor[4] = (c->ihy < 1984) ? 0.0 : c->ccor[4] * 4.0;
 
-    c->apslc = (c->fa - u->vha - c->ccor[4] - 0.018 * c->lbgc < 0.0) ? MIN(c->apslc, 6.0)
-                                                        : MIN(c->apslc, 4.0);
+    c->apslc = (c->fa - u->vha - c->ccor[4] - 0.018 * c->lbgc < 0.0) ? fmin(c->apslc, 6.0)
+                                                        : fmin(c->apslc, 4.0);
 
     c->aocp = c->apslc * (c->fa - u->vha - c->ccor[4] - 0.018 * c->lbgc);
 
-    c->ycor = (c->ihy > 1980) ? MAX(1.7 * u->vha - 0.5 * u->gd - u->y, 0.15 * c->lbg - u->y)
-                        : MAX(2.0 * u->vha - 0.5 * u->gd - u->y, 0.2 * c->lbg - u->y);
+    c->ycor = (c->ihy > 1980) ? fmax(1.7 * u->vha - 0.5 * u->gd - u->y, 0.15 * c->lbg - u->y)
+                        : fmax(2.0 * u->vha - 0.5 * u->gd - u->y, 0.2 * c->lbg - u->y);
 
     if (u->gd == 0)
       c->ycor = 0.0;
 
-    c->ycor = MIN(c->ycor, 0.0);
+    c->ycor = fmin(c->ycor, 0.0);
 
-    c->aoc = MIN(0.5 * (c->aocp + c->aocg), 0.05 * c->lbg + 0.95 * c->aocp);
-    c->aoc = c->ycor + MIN(c->aoc, 0.05 * c->lbg + 0.95 * c->aocg);
+    c->aoc = fmin(0.5 * (c->aocp + c->aocg), 0.05 * c->lbg + 0.95 * c->aocp);
+    c->aoc = c->ycor + fmin(c->aoc, 0.05 * c->lbg + 0.95 * c->aocg);
 
-    c->aocc = (c->aoc + u->y < 0.0) ? MIN(.6 * c->aoc, -u->y) : MIN(c->aoc, 1.25 * u->gsda);
+    c->aocc = (c->aoc + u->y < 0.0) ? fmin(.6 * c->aoc, -u->y) : fmin(c->aoc, 1.25 * u->gsda);
   }
 
   c->l = c->lbg - c->foc - c->aocc;
@@ -205,7 +206,7 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
             0.375) /
        pow(c->l * u->b * c->mdia *CONSTANTS[6][u->munit], 0.125);
 
-  c->dlf = MIN(1.1, 1 + 5.7 * pow((MAX(c->bdr, 1.0) - 1.0), 1.75));
+  c->dlf = fmin(1.1, 1 + 5.7 * pow((fmax(c->bdr, 1.0) - 1.0), 1.75));
 
   c->fb = 0.057 * c->l + CONSTANTS[1][u->munit];
   c->fm = 0.6 * c->ff + 0.4 * c->fa;
@@ -219,13 +220,13 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
     c->rd = c->dm;
   } else {
     c->rd =
-        pow(pow(u->cd, 1.6) + pow(MAX(c->dm - u->dmc - 0.3 * c->db, 0.0), 1.6), 0.625) +
-        MIN(0.3 * c->db, c->dm);
+        pow(pow(u->cd, 1.6) + pow(fmax(c->dm - u->dmc - 0.3 * c->db, 0.0), 1.6), 0.625) +
+        fmin(0.3 * c->db, c->dm);
     c->cbf = 0.95 + (c->l / (150.0 * (c->dm - u->dmc + c->cmdi)));
   }
 
   c->cbfa = c->cbf;
-  c->cbf = MAX(c->cbf, 1.0);
+  c->cbf = fmax(c->cbf, 1.0);
   c->maf = 0.0075 * u->macl + 0.0125 * u->maco + 1.0;
   c->dd = c->rd - c->db;
   c->dc = 0.07 * c->l * (c->rd / c->db - 1.0);

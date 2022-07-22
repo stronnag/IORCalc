@@ -1,7 +1,7 @@
 #include "ior.h"
 #include <math.h>
 #include <stdio.h>
-#include <sys/param.h>
+
 
 void calc_rmc(ior_rec_t *u, calc_rec_t *c)
 {
@@ -44,7 +44,7 @@ void calc_rmc(ior_rec_t *u, calc_rec_t *c)
   }
 
   c->rmc = c->rm + 0.0175 * (u->wcba * u->cbda + u->wcbb * u->cbdb);
-  c->tr = MAX(5.15, CONSTANTS[8][u->munit] * 0.97 * c->l * pow(u->bwl, 3.0) / c->rmc);
+  c->tr = fmax(5.15, CONSTANTS[8][u->munit] * 0.97 * c->l * pow(u->bwl, 3.0) / c->rmc);
   c->cgf = (c->tr > 35.0)
             ? 0.0064 * c->tr + 0.744
             : 2.2 / (c->tr - 5.1) + 0.00023 * c->l * CONSTANTS[6][u->munit] + 0.8693;
@@ -56,7 +56,7 @@ void calc_rmc(ior_rec_t *u, calc_rec_t *c)
     c->cgf = 0.5 * (c->cgf + 0.968);
   }
 
-  c->bwl1 = MIN(3.0 + (u->omd - c->fmd) / (u->md - u->omd) * u->b / 4.0, 0.8 * u->b);
+  c->bwl1 = fmin(3.0 + (u->omd - c->fmd) / (u->md - u->omd) * u->b / 4.0, 0.8 * u->b);
 
   if (c->bwl1 < u->bwl)
     c->bwl1 = u->bwl;

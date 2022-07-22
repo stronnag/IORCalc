@@ -1,7 +1,6 @@
 #include "ior.h"
 #include <math.h>
 #include <stdio.h>
-#include <sys/param.h>
 
 #define INAPT 1
 #define INAPTS 2
@@ -31,40 +30,40 @@ void calc_prop(ior_rec_t *u, calc_rec_t *c) {
     if (u->prd == 0.0) {
       c->ecod = OBOARD;
       u->ipt = NONE;
-      c->emf = MAX(c->emf, 0.002);
+      c->emf = fmax(c->emf, 0.002);
       break;
     }
 
     if (c->ihy > 1974)
-      c->pdc = MIN(c->pdc, c->cmdi + 0.75 * u->prd);
+      c->pdc = fmin(c->pdc, c->cmdi + 0.75 * u->prd);
 
-    c->ps = MIN(u->prd, 4.0 * u->pbw);
+    c->ps = fmin(u->prd, 4.0 * u->pbw);
 
     if ((u->ipt == 2 || u->ipt == 3) && u->phd != 0.0)
-      c->ps = MIN(u->prd, 10.0 * u->phd);
+      c->ps = fmin(u->prd, 10.0 * u->phd);
 
     if (u->aph != 0.0) {
-      c->ecod = (u->aph < u->prd * 1.125 || MIN(u->apt, u->apb) < 0.4 * u->prd) ? INAPTS
+      c->ecod = (u->aph < u->prd * 1.125 || fmin(u->apt, u->apb) < 0.4 * u->prd) ? INAPTS
                                                                         : INAPT;
       break;
     }
 
     if (u->apt != 0.0) {
       c->ecod = STRUT;
-      c->prdc = MIN(c->ps, MIN(u->st1 / 0.08, MIN(u->st2 / 0.3, u->apt / 1.5)));
+      c->prdc = fmin(c->ps, fmin(u->st1 / 0.08, fmin(u->st2 / 0.3, u->apt / 1.5)));
       if (u->st3 > 0.75 * c->prdc || c->prdc == 0.0)
         c->ecod = OTHER;
-      c->pdc = c->pdc - MAX(0.0, u->apb - 0.75 * c->prdc);
+      c->pdc = c->pdc - fmax(0.0, u->apb - 0.75 * c->prdc);
       break;
     }
 
     c->ecod = EXPSFT;
-    c->prdc = MIN(c->ps, MIN(u->st1 / 0.05, MIN(u->st2 / 0.2, u->esl / 1.5)));
+    c->prdc = fmin(c->ps, fmin(u->st1 / 0.05, fmin(u->st2 / 0.2, u->esl / 1.5)));
     if (c->ihy > 1987)
-      c->prdc = MIN(c->prdc, 16.0 * u->psd);
+      c->prdc = fmin(c->prdc, 16.0 * u->psd);
     if (u->st3 > 0.75 * c->prdc || c->prdc == 0.0)
       c->ecod = OTHER;
-    c->pdc = c->pdc - MAX((u->esc - 0.75 * c->prdc) * u->esl / (1.5 * c->prdc), 0.0);
+    c->pdc = c->pdc - fmax((u->esc - 0.75 * c->prdc) * u->esl / (1.5 * c->prdc), 0.0);
     break;
   }
 
@@ -88,15 +87,15 @@ void calc_prop(ior_rec_t *u, calc_rec_t *c) {
       }
 
       if (c->esd > zpf)
-        pfc = z * MIN(1.0, (c->esd - zpf) / (factor * u->prd));
+        pfc = z * fmin(1.0, (c->esd - zpf) / (factor * u->prd));
     }
 
     c->pf = PFACTOR[ipt - 1][c->ecod - 1] - pfc;
 
     c->df = (c->ps < 0.03 * c->l)
          ? c->pf * sqrt(c->pdc / c->db) *
-                   (MAX(c->prdc * c->prdc * 60.0 / (c->l * c->l), 0.024) - 0.024)
-             : 1.25 * c->pf * sqrt(c->pdc / c->db) * MIN(c->prdc / c->l, 0.04);
+                   (fmax(c->prdc * c->prdc * 60.0 / (c->l * c->l), 0.024) - 0.024)
+             : 1.25 * c->pf * sqrt(c->pdc / c->db) * fmin(c->prdc / c->l, 0.04);
   }
-  c->epf = MAX(0.96, 1.0 - c->emf - c->df);
+  c->epf = fmax(0.96, 1.0 - c->emf - c->df);
 }

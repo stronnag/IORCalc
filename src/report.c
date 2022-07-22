@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <sys/param.h>
 #include "iorext.h"
 
 static void show_error(char** buf, char *fmt, double var1, double var2) {
@@ -32,9 +31,9 @@ char * report(ior_rec_t *u, calc_rec_t *c) {
   show_error(&buf, "BF %8.3g > BFI %8.3g", u->bf, u->bfi);
   show_error(&buf, "BA %8.3g > BAI %8.3g", u->ba, u->bai);
 
-  t1 = MAX(c->fdi, c->cmdi);
-  t1 = MAX(t1, u->vhai - c->fai);
-  t1 = MAX(t1, u->vha - c->fa);
+  t1 = fmax(c->fdi, c->cmdi);
+  t1 = fmax(t1, u->vhai - c->fai);
+  t1 = fmax(t1, u->vha - c->fa);
   show_error(&buf, "Hull depth exceeds DM ", t1, c->dm);
 
   if (u->bha)
@@ -116,7 +115,7 @@ char * report(ior_rec_t *u, calc_rec_t *c) {
 
   if (c->jc > u->j) {
        show_error(&buf, "SPL %8.3g exceeds J %8.3g", u->spl, u->j);
-       t1 = MAX(u->j, u->spl);
+       t1 = fmax(u->j, u->spl);
        show_error(&buf, "SMW exceeds limit %8.3g", u->smw, 1.8 * t1);
        show_error(&buf, "MW %8.3g exceeds GO %8.3g", u->mw, u->go);
   }

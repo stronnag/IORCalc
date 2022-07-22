@@ -1,7 +1,6 @@
 #include <math.h>
 #include <stdio.h>
 #include <math.h>
-#include <sys/param.h>
 
 #include "iorext.h"
 
@@ -22,25 +21,25 @@ void calc_rtg(ior_rec_t *u, calc_rec_t *c) {
     c->sa = c->s;
     c->satca = 0;
   } else
-    c->sa = sqrt(MAX(c->rsata, MAX(c->rsala, c->spin)));
+    c->sa = sqrt(fmax(c->rsata, fmax(c->rsala, c->spin)));
 
   if (idiv < 2) {
        c->dlfa = 0.98;
     c->cgfa = (c->cgf + c->cgfm - 0.005) * 0.5;
     c->scfa = (c->shr > 15.5) ? c->scf : 1.0 + 0.024 * (c->shr - 15.5);
   } else {
-       c->cgfc = MIN(1.0, MAX(0.5, 0.375 * u->b / (c->cmdi + c->mdi + c->omdi) - 0.5));
+       c->cgfc = fmin(1.0, fmax(0.5, 0.375 * u->b / (c->cmdi + c->mdi + c->omdi) - 0.5));
        c->cgfa = c->cgfc * (c->cgf - c->cgfm) + c->cgfm;
-       c->dlfa = 0.98 + MAX(0.0, 5.54 * pow(c->bdr - 0.94, 1.92));
+       c->dlfa = 0.98 + fmax(0.0, 5.54 * pow(c->bdr - 0.94, 1.92));
     if (idiv == 3) {
-      c->dlfa = MIN(c->dlfa, 1.1);
+      c->dlfa = fmin(c->dlfa, 1.1);
       c->cbfa = c->cbf;
       c->msar = 0.5 * (c->pc * c->ec + c->ic * c->lp);
       c->shra = sqrt(c->msar) * (8.66 / c->l + 1.0 / sqrt(u->b * c->mdia)) -
              c->l / (10.0 *CONSTANTS[0][u->munit]);
-      c->scfa = 1.0 + MAX(0.0, 0.04 * (c->shra - 15.5));
+      c->scfa = 1.0 + fmax(0.0, 0.04 * (c->shra - 15.5));
     } else {
-      c->dlfa = MIN(c->dlfa, 0.5 * (1.0 + c->dlf));
+      c->dlfa = fmin(c->dlfa, 0.5 * (1.0 + c->dlf));
       c->scfa = c->scf;
     }
   }
@@ -56,12 +55,12 @@ void calc_rtg(ior_rec_t *u, calc_rec_t *c) {
                               0.085 * (fbx - c->fai))) /
                      (1.41 / CONSTANTS[17][u->munit] + 0.16 * (c->mr / c->dlf))),
                     0.05);
-       c->csf = MAX(1.0, c->csf);
+       c->csf = fmax(1.0, c->csf);
   } else
        c->csf = 1.0;
 
-  c->cgf = c->csf * MAX(c->cgf, c->cgfm);
-  c->cgf = MAX(c->cgfm, c->cgf);
+  c->cgf = c->csf * fmax(c->cgf, c->cgfm);
+  c->cgf = fmax(c->cgfm, c->cgf);
 
   c->lrp = (u->mpen & 1) ? 1.01 : 1.0;
 
@@ -72,15 +71,15 @@ void calc_rtg(ior_rec_t *u, calc_rec_t *c) {
   pars = c->sca * (0.0777 * c->sca / sqrt(u->b * c->d) + 0.2216);
   parl = c->l * (0.0659 * c->l / pow((c->l * u->b * c->mdia), 1.0 / 3.0) + 0.1738);
   c->mra2 = (pars + parl + c->dc + c->fc) * c->dlfa;
-  c->mra = MIN(c->mra1, c->mra2);
+  c->mra = fmin(c->mra1, c->mra2);
   c->r = c->mr * c->epf * c->cgf * c->maf * c->cbf * c->smf * c->lrp * c->tpf;
-  c->rior = MAX(15.95 / CONSTANTS[6][u->munit], c->r);
-  c->ra = MAX(c->rior * 0.85, c->mra * c->epf * c->cgfa * c->maf * c->cbfa * c->smf * c->lrp * c->tpf);
+  c->rior = fmax(15.95 / CONSTANTS[6][u->munit], c->r);
+  c->ra = fmax(c->rior * 0.85, c->mra * c->epf * c->cgfa * c->maf * c->cbfa * c->smf * c->lrp * c->tpf);
   if (c->ihy > 1981)
-    c->ra = MAX(c->ra, c->rior * 0.968);
+    c->ra = fmax(c->ra, c->rior * 0.968);
   c->rtf = trunc_to(c->rior *CONSTANTS[6][u->munit], 2);
-  c->ra = MIN(c->ra, c->rior);
-  c->rtfa = MIN(c->rtf, trunc_to(c->ra *CONSTANTS[6][u->munit], 2));
+  c->ra = fmin(c->ra, c->rior);
+  c->rtfa = fmin(c->rtf, trunc_to(c->ra *CONSTANTS[6][u->munit], 2));
   c->w = 1.6 *
       (CONSTANTS[6][u->munit] *CONSTANTS[6][u->munit] * c->l * u->b * u->b +
        (u->p - c->d / 2.0) * (5.0 *CONSTANTS[6][u->munit] * u->p - 110.0) + 35.0 * c->r) /
@@ -97,9 +96,9 @@ void calc_rtg(ior_rec_t *u, calc_rec_t *c) {
   age = u->yr - 1900;
 
   if (u->yr > 1972)
-    af = 1.0 - MAX(0.0, (0.0015 * (84 - age) * (age + 5) / 88));
+    af = 1.0 - fmax(0.0, (0.0015 * (84 - age) * (age + 5) / 88));
   else
-    af = MIN(1.0, 0.997 - ((0.015 * (72 - age) * age / 72)));
+    af = fmin(1.0, 0.997 - ((0.015 * (72 - age) * age / 72)));
 
   c->tmf = trunc_to(c->tmf * af, 4);
 }
