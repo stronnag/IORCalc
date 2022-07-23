@@ -190,7 +190,7 @@ public class IORCalc : Gtk.Application {
 		var scrolled = new Gtk.ScrolledWindow (null, null);
 		scrolled.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
         scrolled.add (textview);
-		vbox.pack_start (scrolled, true, true, 0);
+
 		show_cert = new Gtk.Button.with_label("Show Certificate");
 		show_cert.sensitive = false;
 		show_cert.clicked.connect(() => {
@@ -200,6 +200,7 @@ public class IORCalc : Gtk.Application {
 				cw_load_file(fn);
 			});
 		vbox.pack_start (show_cert, false, false, 0);
+		vbox.pack_start (scrolled, true, true, 0);
 		window.add (vbox);
         window.show_all();
     }
