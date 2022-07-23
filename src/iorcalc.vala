@@ -198,8 +198,8 @@ public class IORCalc : Gtk.Application {
     }
 
 	private void set_menu_states(bool is_ok) {
-		set_menu_state("save", is_ok);
-		set_menu_state("saveas", is_ok);
+//		set_menu_state("save", is_ok);
+//		set_menu_state("saveas", is_ok);
 		set_menu_state("calc", is_ok);
 	}
 
@@ -289,6 +289,9 @@ public class IORCalc : Gtk.Application {
 				row = ef.row;
 			}
 			lab = new Gtk.Label(strdup(ef.prompt));
+			lab.justify = Gtk.Justification.LEFT;
+			lab.xalign = 0;
+			lab.set_padding(2,0);
 			if (ef.flag != IORData.EditType.ED_T) {
 				grid.attach(lab, col, row);
 				col++;
@@ -332,7 +335,7 @@ public class IORCalc : Gtk.Application {
 				grid.attach(e, col, row);
 				col++;
 			} else {
-				grid.attach(lab, col, row, 6, 1);
+				grid.attach(lab, col, row, 4, 1);
 			}
 		}
 	}

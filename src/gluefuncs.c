@@ -45,6 +45,7 @@ static edit_field_t editlist[] = {
      {"Comment1:","comment0",offsetof(ior_rec_t,comment[0]), 36, 0, 13, EDIT_TYPE_ED_C},
      {"Comment2:","comment1",offsetof(ior_rec_t,comment[1]), 36, 0, 14, EDIT_TYPE_ED_C},
      {"Comment3:","comment2",offsetof(ior_rec_t,comment[2]), 36, 0, 15, EDIT_TYPE_ED_C},
+     {"Note: Unit Codes, 0=Imperial, 1=Metric","_",0, 0, 0, 16, EDIT_TYPE_ED_T},
      {"LOA","loa",offsetof(ior_rec_t,loa), 8, 0, 0, EDIT_TYPE_ED_F},
      {"FGO","fgo",offsetof(ior_rec_t,fgo), 8, 2, 0, EDIT_TYPE_ED_F},
      {"AGO","ago",offsetof(ior_rec_t,ago), 8, 4, 0, EDIT_TYPE_ED_F},
@@ -167,7 +168,7 @@ static edit_field_t editlist[] = {
      {"FBM","fbm",offsetof(ior_rec_t,fbm), 8, 4, 15, EDIT_TYPE_ED_F},
      {"Float Date:","ifda",offsetof(ior_rec_t,ifda), 2, 6, 15, EDIT_TYPE_ED_I},
      {"/","ifmo",offsetof(ior_rec_t,ifmo), 2, 8, 15, EDIT_TYPE_ED_I},
-     {"/","ifyr",offsetof(ior_rec_t,ifyr), 4, 10, 15, EDIT_TYPE_ED_I},
+     {"Note: Prop Codes: 0=None, 1=Fixed, 2=Folding, 3=Feathering, 4=Outboard ","_",0, 0, 0, 16, EDIT_TYPE_ED_T},
      {"IG","ig",offsetof(ior_rec_t,ig), 8, 0, 0, EDIT_TYPE_ED_F},
      {"ISP","isp",offsetof(ior_rec_t,isp), 8, 2, 0, EDIT_TYPE_ED_F},
      {"J ","j",offsetof(ior_rec_t,j), 8, 4, 0, EDIT_TYPE_ED_F},
@@ -224,10 +225,12 @@ static edit_field_t editlist[] = {
      {"S3","s3",offsetof(ior_rec_t,s3), 8, 8, 13, EDIT_TYPE_ED_F},
      {"GY","gy",offsetof(ior_rec_t,gy), 8, 0, 14, EDIT_TYPE_ED_F},
      {"HY","hy",offsetof(ior_rec_t,hy), 8, 2, 14, EDIT_TYPE_ED_F},
-     {"Mule:","mule",offsetof(ior_rec_t,mule), 2, 4, 14, EDIT_TYPE_ED_I}
+     {"Mule:","mule",offsetof(ior_rec_t,mule), 2, 4, 14, EDIT_TYPE_ED_I},
+     {"Note: Rig Factor: 0=None, 1=LRP, 2=SMF, 3=LRP & SMF",NULL, 0, 0, 0, 15, EDIT_TYPE_ED_T},
+     {"Note: Mule code  :  0 None,  1 Mule, 2 Topsail",NULL, 0, 0, 0, 16, EDIT_TYPE_ED_T}
 };
 
-size_t editlist_length1 = (sizeof(editlist)/sizeof(edit_field_t) - 1);
+size_t editlist_length1 = (sizeof(editlist)/sizeof(edit_field_t));
 
 static char* attrs[] = {
      "yacht", "sail", "yr" , "loa" , "fgo", "ago", "fd",
