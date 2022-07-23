@@ -114,6 +114,10 @@ public class IORCalc : Gtk.Application {
 
         aq = new GLib.SimpleAction("save",null);
         aq.activate.connect(() => {
+				if(filename == null) {
+					var cfn = run_chooser( Gtk.FileChooserAction.SAVE);
+					filename = cfn;
+				}
 				if(filename != null) {
 					IORIO.save_file(filename, udata);
 				}
@@ -132,6 +136,8 @@ public class IORCalc : Gtk.Application {
 
         aq = new GLib.SimpleAction("calc",null);
         aq.activate.connect(() => {
+				var tfn = Path.build_filename(Environment.get_tmp_dir(), ".iorcalc-save.json");
+				IORIO.save_file(tfn, udata);
 				show_cert.sensitive = false;
 				var s0 = IORData.calc_ior(udata, cdata);
 				var s1 = IORData.report(udata, cdata);
@@ -144,6 +150,7 @@ public class IORCalc : Gtk.Application {
 					textview.buffer.insert(ref iter, s1, -1);
 				}
 				show_cert.sensitive = true;
+				FileUtils.unlink(tfn);
 			});
         window.add_action(aq);
 
