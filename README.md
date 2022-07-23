@@ -68,6 +68,10 @@ Two example input files are provided (`samples` in the repo, installed in `share
 * summerwine.json : 1984 Humphreys one tonner
 * manitou4.json : 1969 C&C 39
 
+## User Guide
+
+There is a [user guide](docs/)
+
 ## Miscellaneous
 
 Licence : GPL v3 or later
