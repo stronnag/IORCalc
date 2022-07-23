@@ -223,9 +223,11 @@ public class IORCalc : Gtk.Application {
 			var ok = IORData.get(i, out ef);
 			if (ok != 0)
 				break;
-			var ent = EList.get(i);
-			var s = IORData.to_string(udata, i);
-			ent.text = s;
+			if(ef.flag != IORData.EditType.ED_T) {
+				var ent = EList.get(i);
+				var s = IORData.to_string(udata, i);
+				ent.text = s;
+			}
 		}
 	}
 
