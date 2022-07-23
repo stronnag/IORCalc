@@ -10,19 +10,21 @@ namespace IORIO {
 			if (ok != 0)
 				break;
 
-			builder.set_member_name (ef.ename);
-			switch(ef.flag) {
-			case IORData.EditType.ED_F:
-				builder.add_double_value(IORData.get_double(u, i));
-				break;
-			case IORData.EditType.ED_I:
-				builder.add_int_value (IORData.get_int(u, i));
-				break;
-			case IORData.EditType.ED_C:
-				builder.add_string_value (IORData.get_string(u, i));
-				break;
-			default:
-				break;
+			if(ef.ename != null) {
+				builder.set_member_name (ef.ename);
+				switch(ef.flag) {
+				case IORData.EditType.ED_F:
+					builder.add_double_value(IORData.get_double(u, i));
+					break;
+				case IORData.EditType.ED_I:
+					builder.add_int_value (IORData.get_int(u, i));
+					break;
+				case IORData.EditType.ED_C:
+					builder.add_string_value (IORData.get_string(u, i));
+					break;
+				default:
+					break;
+				}
 			}
 		}
 		builder.end_object ();
@@ -52,21 +54,27 @@ namespace IORIO {
 						var ok = IORData.get(i, out ef);
 						if (ok != 0)
 							break;
-						switch(ef.flag) {
-						case IORData.EditType.ED_F:
-							var d = obj.get_double_member(ef.ename);
-							IORData.set_double(d, u, i);
-							break;
-						case IORData.EditType.ED_I:
-							var v = (int)obj.get_int_member(ef.ename);
-							IORData.set_int(v, u, i);
-							break;
-						case IORData.EditType.ED_C:
-							var s = obj.get_string_member(ef.ename);
-							IORData.set_string(s, u, i);
-							break;
-						default:
-							break;
+						if (ef.ename != null) {
+							if(obj.has_member(ef.ename)) {
+								switch(ef.flag) {
+								case IORData.EditType.ED_F:
+									var d = obj.get_double_member(ef.ename);
+									IORData.set_double(d, u, i);
+									break;
+								case IORData.EditType.ED_I:
+									var v = (int)obj.get_int_member(ef.ename);
+									IORData.set_int(v, u, i);
+									break;
+								case IORData.EditType.ED_C:
+									var s = obj.get_string_member(ef.ename);
+									IORData.set_string(s, u, i);
+									break;
+								default:
+									break;
+								}
+							} else {
+								stderr.printf("Missing JSON key \"%s\"\n", ef.ename);
+							}
 						}
 					}
 				}

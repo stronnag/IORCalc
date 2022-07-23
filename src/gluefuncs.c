@@ -22,17 +22,17 @@ static edit_field_t editlist[] = {
      {"Units:","munit",offsetof(ior_rec_t,munit), 1, 4, 6, EDIT_TYPE_ED_I},
      {"Std No:","istd",offsetof(ior_rec_t,istd), 3, 6, 6, EDIT_TYPE_ED_I},
      {"Cert:","icert",offsetof(ior_rec_t,icert), 5, 8, 6, EDIT_TYPE_ED_I},
-     {"Measured:","idaa",offsetof(ior_rec_t,idaa), 2, 0, 7, EDIT_TYPE_ED_I},
-     {"/","idbb",offsetof(ior_rec_t,idbb), 2, 2, 7, EDIT_TYPE_ED_I},
-     {"/","idcc",offsetof(ior_rec_t,idcc), 4, 4, 7, EDIT_TYPE_ED_I},
-     {"Hull:","hmo",offsetof(ior_rec_t,hmo), 2, 6, 7, EDIT_TYPE_ED_I},
-     {"/","hyr",offsetof(ior_rec_t,hyr), 4, 8, 7, EDIT_TYPE_ED_I},
-     {"Series:","smo",offsetof(ior_rec_t,smo), 2, 0, 8, EDIT_TYPE_ED_I},
-     {"/","syr",offsetof(ior_rec_t,syr), 4, 2, 8, EDIT_TYPE_ED_I},
+     {"Measure day:","idaa",offsetof(ior_rec_t,idaa), 2, 0, 7, EDIT_TYPE_ED_I},
+     {"Month","idbb",offsetof(ior_rec_t,idbb), 2, 2, 7, EDIT_TYPE_ED_I},
+     {"Year","idcc",offsetof(ior_rec_t,idcc), 4, 4, 7, EDIT_TYPE_ED_I},
+     {"Hull month:","hmo",offsetof(ior_rec_t,hmo), 2, 6, 7, EDIT_TYPE_ED_I},
+     {"Year","hyr",offsetof(ior_rec_t,hyr), 4, 8, 7, EDIT_TYPE_ED_I},
+     {"Series month:","smo",offsetof(ior_rec_t,smo), 2, 0, 8, EDIT_TYPE_ED_I},
+     {"Year","syr",offsetof(ior_rec_t,syr), 4, 2, 8, EDIT_TYPE_ED_I},
      {"Age:","mon",offsetof(ior_rec_t,mon), 2, 4, 8, EDIT_TYPE_ED_I},
-     {"/","yr",offsetof(ior_rec_t,yr), 4, 6, 8, EDIT_TYPE_ED_I},
-     {"Rig:","irgm",offsetof(ior_rec_t,irgm), 2, 8, 8, EDIT_TYPE_ED_I},
-     {"/","irgy",offsetof(ior_rec_t,irgy), 4, 10, 8, EDIT_TYPE_ED_I},
+     {"Month","yr",offsetof(ior_rec_t,yr), 4, 6, 8, EDIT_TYPE_ED_I},
+     {"Rig month:","irgm",offsetof(ior_rec_t,irgm), 2, 8, 8, EDIT_TYPE_ED_I},
+     {"Year","irgy",offsetof(ior_rec_t,irgy), 4, 10, 8, EDIT_TYPE_ED_I},
      {"Anchor1:","anchor1",offsetof(ior_rec_t,anchor[0]), 12, 0, 9, EDIT_TYPE_ED_C},
      {"Anchor2:","anchor2",offsetof(ior_rec_t,anchor[1]), 12, 2, 9, EDIT_TYPE_ED_C},
      {"Anchor3:","anchor3",offsetof(ior_rec_t,anchor[2]), 12, 4, 9, EDIT_TYPE_ED_C},
@@ -45,7 +45,7 @@ static edit_field_t editlist[] = {
      {"Comment1:","comment0",offsetof(ior_rec_t,comment[0]), 36, 0, 13, EDIT_TYPE_ED_C},
      {"Comment2:","comment1",offsetof(ior_rec_t,comment[1]), 36, 0, 14, EDIT_TYPE_ED_C},
      {"Comment3:","comment2",offsetof(ior_rec_t,comment[2]), 36, 0, 15, EDIT_TYPE_ED_C},
-     {"Note: Unit Codes, 0=Imperial, 1=Metric","_",0, 0, 0, 16, EDIT_TYPE_ED_T},
+     {"Note: Unit Codes, 0=Imperial, 1=Metric",NULL,0, 0, 0, 16, EDIT_TYPE_ED_T},
      {"LOA","loa",offsetof(ior_rec_t,loa), 8, 0, 0, EDIT_TYPE_ED_F},
      {"FGO","fgo",offsetof(ior_rec_t,fgo), 8, 2, 0, EDIT_TYPE_ED_F},
      {"AGO","ago",offsetof(ior_rec_t,ago), 8, 4, 0, EDIT_TYPE_ED_F},
@@ -168,7 +168,7 @@ static edit_field_t editlist[] = {
      {"FBM","fbm",offsetof(ior_rec_t,fbm), 8, 4, 15, EDIT_TYPE_ED_F},
      {"Float Date:","ifda",offsetof(ior_rec_t,ifda), 2, 6, 15, EDIT_TYPE_ED_I},
      {"/","ifmo",offsetof(ior_rec_t,ifmo), 2, 8, 15, EDIT_TYPE_ED_I},
-     {"Note: Prop Codes: 0=None, 1=Fixed, 2=Folding, 3=Feathering, 4=Outboard ","_",0, 0, 0, 16, EDIT_TYPE_ED_T},
+     {"Note: Prop Codes: 0=None, 1=Fixed, 2=Folding, 3=Feathering, 4=Outboard",NULL,0, 0, 0, 16, EDIT_TYPE_ED_T},
      {"IG","ig",offsetof(ior_rec_t,ig), 8, 0, 0, EDIT_TYPE_ED_F},
      {"ISP","isp",offsetof(ior_rec_t,isp), 8, 2, 0, EDIT_TYPE_ED_F},
      {"J ","j",offsetof(ior_rec_t,j), 8, 4, 0, EDIT_TYPE_ED_F},
@@ -279,9 +279,11 @@ edit_field_t *find_field_by_name(char *name, void *u) {
      edit_field_t *r = NULL;
      if(name != NULL && u != NULL) {
 	  for(int i = 0; i < editlist_length1; i++) {
-	       if(strcmp(editlist[i].ename, name) == 0) {
-		    r = editlist+i;
-		    break;
+	       if (editlist[i].ename != NULL) {
+		    if(strcmp(editlist[i].ename, name) == 0) {
+			 r = editlist+i;
+			 break;
+		    }
 	       }
 	  }
      }
