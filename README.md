@@ -59,11 +59,11 @@ Requirements:
 
 ## Binary Release Media
 
-There is a Debian package (`*.deb`) and Windows Installer in the release area.
+There is a Debian package (`*.deb`) and Windows Installer in the [release area](https://github.com/stronnag/IORCalc/releases).
 
 ## Example files
 
-Two example input files are provided (`samples` in the repo, installed in `share/docs/iorcalc`).
+Two example input files are provided (`samples` in the repo, installed in `share/doc/iorcalc`).
 
 * summerwine.json : 1984 Humphreys one tonner
 * manitou4.json : 1969 C&C 39
