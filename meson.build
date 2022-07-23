@@ -1,4 +1,4 @@
-project('iorcalc', 'vala', 'c', version : '0.0.2')
+project('iorcalc', 'vala', 'c', version : '0.1.0')
 
 conf_data = configuration_data()
 conf_data.set('version', meson.project_version())
@@ -39,7 +39,9 @@ executable(
   include_directories : configuration_inc,
   c_args: '-D_GNU_SOURCE',
   install: true,
+  gui_app: true,
 )
 
+subdir('samples')
 subdir('data')
 meson.add_install_script('meson/post_install.sh')

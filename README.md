@@ -59,9 +59,14 @@ Requirements:
 
 ## Binary Release Media
 
-There is a Debian package in the release area.
+There is a Debian package (`*.deb`) and Windows Installer in the release area.
 
-At some stage, a Windows package (either Zip or an Installer) will be available.
+## Example files
+
+Two example input files are provided (`samples` in the repo, installed in `share/docs/iorcalc`).
+
+* summerwine.json : 1984 Humphreys one tonner
+* manitou4.json : 1969 C&C 39
 
 ## Miscellaneous
 

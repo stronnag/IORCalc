@@ -147,6 +147,10 @@ public class IORCalc : Gtk.Application {
 			});
         window.add_action(aq);
 
+		set_accels_for_action ("win.calc", { "<Primary>c" });
+		set_accels_for_action ("win.save", { "<Primary>s" });
+		set_accels_for_action ("win.open", { "<Primary>o" });
+
         aq = new GLib.SimpleAction("quit",null);
         aq.activate.connect(() => {
                 window.destroy();
