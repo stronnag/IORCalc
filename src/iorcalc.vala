@@ -224,6 +224,7 @@ public class IORCalc : Gtk.Application {
 				if (cfn != null) {
 					filename = cfn;
 					ioropen(filename);
+					textview.buffer.text = "";
 				}
 			});
         window.add_action(aq);
