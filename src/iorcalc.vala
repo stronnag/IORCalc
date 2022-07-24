@@ -77,7 +77,7 @@ public class IORCalc : Gtk.Application {
 		window = new Gtk.ApplicationWindow(this);
 		add_window (window);
 		window.window_position = Gtk.WindowPosition.CENTER;
-        window.set_default_size (1024, 800);
+        window.set_default_size (800, 720);
 		nb = new Gtk.Notebook();
 
 		var header_bar = new Gtk.HeaderBar ();
@@ -146,7 +146,7 @@ public class IORCalc : Gtk.Application {
 				if(s1 != null) {
 					Gtk.TextIter iter;
 					textview.buffer.get_end_iter(out iter);
-					textview.buffer.insert(ref iter, "\n-- Warnings\n", -1);
+					textview.buffer.insert(ref iter, "-- Warnings\n", -1);
 					textview.buffer.insert(ref iter, s1, -1);
 				}
 				show_cert.sensitive = true;
@@ -191,6 +191,12 @@ public class IORCalc : Gtk.Application {
 		scrolled.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
         scrolled.add (textview);
 
+		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
+		bbox.set_layout (Gtk.ButtonBoxStyle.SPREAD);
+		bbox.set_spacing (5);
+		var run_calc = new Gtk.Button.with_label("Calculate Rating");
+		run_calc.set_action_name("win.calc");
+
 		show_cert = new Gtk.Button.with_label("Show Certificate");
 		show_cert.sensitive = false;
 		show_cert.clicked.connect(() => {
@@ -199,8 +205,12 @@ public class IORCalc : Gtk.Application {
 				certwindow();
 				cw_load_file(fn);
 			});
-		vbox.pack_start (show_cert, false, false, 0);
+
+		bbox.add(run_calc);
+		bbox.add(show_cert);
+
 		vbox.pack_start (scrolled, true, true, 0);
+		vbox.pack_start (bbox, false, false, 0);
 		window.add (vbox);
         window.show_all();
     }
@@ -293,6 +303,8 @@ public class IORCalc : Gtk.Application {
 				col = 0;
 				if(ef.row == 0) {
 					grid = new Grid();
+					grid.set_column_homogeneous (false);
+					grid.set_column_spacing (2);
 					nb.append_page(grid, new Gtk.Label(tlabs[gid]));
 					gid++;
 				}
@@ -307,6 +319,7 @@ public class IORCalc : Gtk.Application {
 				col++;
 				e = new Gtk.Entry();
 				EList.add(i, e);
+				e.width_chars = ef.len;
 				switch(ef.flag) {
 				case IORData.EditType.ED_F:
 					e.input_purpose = Gtk.InputPurpose.NUMBER;
@@ -368,7 +381,7 @@ public class IORCalc : Gtk.Application {
 		scrolled.add (certview);
 		vbox.pack_start (scrolled, true, true, 0);
 
-		Gtk.ButtonBox bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
+		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
 		bbox.set_layout (Gtk.ButtonBoxStyle.SPREAD);
 		bbox.set_spacing (5);
 

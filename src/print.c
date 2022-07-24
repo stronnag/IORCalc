@@ -11,12 +11,10 @@ static char *cptrs[66][2];
 char * show_rtg(ior_rec_t *u, calc_rec_t *c) {
      char *buf = NULL;
      int n = asprintf(&buf,
-		      "Yacht: %s Sail no: %s\n"
 		      "        FF    FA    FMD    BWL      RMC    CGF      EPF    DSPL\n"
-		      "    %7.3f%6.3f%6.3f%7.3f%10.1f%8.4f%8.4f%8.1f\n\n"
-		      "             I       JC        S      MR      R        RA    TMF\n"
-		      "        %9.4f%8.4f%8.4f%10.4f%8.4f%8.4f%7.4f\n",
-		      u->yacht, u->sail,
+		      "    %7.3f%6.3f%6.3f%7.3f%10.1f%8.4f%8.4f%8.1f\n"
+		      "         I       JC        S      MR      R        RA    TMF\n"
+		      "     %9.4f%8.4f%8.4f%10.4f%8.4f%8.4f%7.4f\n",
 		      u->ffm, u->fam, c->fmd, u->bwl, c->rmc, c->cgf, c->epf, c->dspl,
 		      c->i, c->jc, c->s, c->mr, c->r, c->ra, c->tmf);
      if(n == -1) {

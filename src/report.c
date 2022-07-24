@@ -52,13 +52,13 @@ char * report(ior_rec_t *u, calc_rec_t *c) {
 	    (u->fais - u->fmds) * (u->sdm - u->fgo - 0.5 * c->lbg) / (0.5 * c->lbg - u->gsda);
        show_error(&buf, "DMT approximation error %8.4g", fabs(u->dmt - u->dms - t1), t2);
   }
-
+/*
   if (u->pdt) {
        t1 = u->fmds +
 	    (u->fais - u->fmds) * (u->spd - u->fgo - 0.5 * c->lbg) / (0.5 * c->lbg - u->gsda);
        show_error(&buf, "PDT approximation error %8.4g", fabs(u->pdt - u->pds - t1), t2);
   }
-
+*/
   if (u->glai) {
        t1 = 0.875 * u->b + u->gd;
        show_error(&buf, "GLAI required, girth %8.3g, GLAI %8.3g", t1, u->glai);
