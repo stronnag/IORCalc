@@ -168,8 +168,8 @@ static edit_field_t editlist[] = {
      {"FJ","fs",offsetof(ior_rec_t,fs), 8, 0, 15, EDIT_TYPE_ED_F},
      {"FBI","fbi",offsetof(ior_rec_t,fbi), 8, 2, 15, EDIT_TYPE_ED_F},
      {"FBM","fbm",offsetof(ior_rec_t,fbm), 8, 4, 15, EDIT_TYPE_ED_F},
-     {"Float Date:","ifda",offsetof(ior_rec_t,ifda), 2, 6, 15, EDIT_TYPE_ED_I},
-     {"/","ifmo",offsetof(ior_rec_t,ifmo), 2, 8, 15, EDIT_TYPE_ED_I},
+     {"Float Month:","ifda",offsetof(ior_rec_t,ifda), 2, 6, 15, EDIT_TYPE_ED_I},
+     {"Year","ifmo",offsetof(ior_rec_t,ifmo), 2, 8, 15, EDIT_TYPE_ED_I},
      {"Note: Prop Codes: 0=None, 1=Fixed, 2=Folding, 3=Feathering, 4=Outboard",NULL,0, 0, 0, 16, EDIT_TYPE_ED_T},
 
      {"IG","ig",offsetof(ior_rec_t,ig), 8, 0, 0, EDIT_TYPE_ED_F},
