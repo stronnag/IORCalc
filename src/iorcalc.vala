@@ -1,5 +1,122 @@
 using Gtk;
 
+namespace IChooser {
+	string? chooser(Gtk.FileChooserAction action, string fty="json") {
+		string fn = null;
+		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog (
+			"IOR Data File",
+			null, action,
+			"_Cancel",
+			Gtk.ResponseType.CANCEL,
+			(action == Gtk.FileChooserAction.SAVE) ? "_Save" : "_Open",
+			Gtk.ResponseType.ACCEPT);
+
+		fc.set_modal(true);
+		fc.select_multiple = false;
+		var filter = new Gtk.FileFilter ();
+		if(fty == "json") {
+			filter.set_filter_name ("JSON files");
+			filter.add_pattern ("*.json");
+		} else {
+			filter.set_filter_name ("Text files");
+			filter.add_pattern ("*.txt");
+		}
+		fc.add_filter (filter);
+		filter = new Gtk.FileFilter ();
+		filter.set_filter_name ("All Files");
+		filter.add_pattern ("*");
+		fc.add_filter (filter);
+
+		var id = fc.run();
+		if (id == Gtk.ResponseType.ACCEPT) {
+			fn = fc.get_file().get_path ();
+		}
+		fc.close();
+		fc.destroy();
+		return fn;
+	}
+}
+
+public class CertWindow : Gtk.Window {
+	private Gtk.TextView certview;
+	public  CertWindow(void *u, void *c) {
+		set_title("IOR Certifiate");
+		set_modal(true);
+		set_default_size (1200, 800);
+
+		var vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+		certview = new Gtk.TextView();
+		certview.monospace = true;
+		certview.editable = false;
+
+		var scrolled = new Gtk.ScrolledWindow (null, null);
+		scrolled.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
+		scrolled.add (certview);
+		vbox.pack_start (scrolled, true, true, 0);
+
+		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
+		bbox.set_layout (Gtk.ButtonBoxStyle.SPREAD);
+		bbox.set_spacing (5);
+
+		var b1 = new Gtk.Button.with_label ("Save to file");
+		var b2 = new Gtk.Button.with_label ("Print");
+		var b3 = new Gtk.Button.with_label ("Close");
+
+		if(Environment.find_program_in_path("lp") != null) {
+			b1.clicked.connect(() => {
+					var fn = Util.mktempname();
+					IORData.pcert(u, c, fn, 2);
+					try {
+						string[] args = {"lp", fn};
+						Pid pid;
+						Process.spawn_async ("/",
+											 args,
+											 null,
+											 SpawnFlags.SEARCH_PATH|SpawnFlags.DO_NOT_REAP_CHILD,
+											 null, out pid);
+						ChildWatch.add (pid, (pid, status) => {
+								Process.close_pid (pid);
+								FileUtils.unlink(fn);
+							});
+					} catch (SpawnError e) {
+						FileUtils.unlink(fn);
+						print ("Error: %s\n", e.message);
+					}
+				});
+		} else {
+			b2.sensitive = false;
+		}
+		b1.clicked.connect(() => {
+				var fn = IChooser.chooser( Gtk.FileChooserAction.SAVE, "txt");
+				if (fn != null) {
+					IORData.pcert(u, c, fn, 2);
+				}
+			});
+
+		b3.clicked.connect(() => {
+				destroy();
+			});
+		bbox.add (b1);
+		bbox.add (b2);
+		bbox.add (b3);
+		vbox.pack_start (bbox, false, false, 0);
+		add(vbox);
+		show_all();
+	}
+
+	public void load_file(string fn) {
+		if (fn != null) {
+			try {
+				string buf;
+				if(FileUtils.get_contents(fn, out buf)) {
+					certview.buffer.text = buf;
+				}
+			} catch {}
+			FileUtils.unlink(fn);
+		}
+	}
+}
+
 public class EList : Object {
 	public struct list {
 		public int idx;
@@ -38,7 +155,6 @@ public class IORCalc : Gtk.Application {
 	private string? filename;
 	private Gtk.TextView textview;
 	private Gtk.Button show_cert;
-	private Gtk.TextView certview;
 
 	public IORCalc () {
 		Object(application_id: "org.stronnag.iorcalc",
@@ -104,7 +220,7 @@ public class IORCalc : Gtk.Application {
         var aq = new GLib.SimpleAction("open",null);
         aq.activate.connect(() => {
 				show_cert.sensitive = false;
-				var cfn = run_chooser( Gtk.FileChooserAction.OPEN);
+				var cfn = IChooser.chooser( Gtk.FileChooserAction.OPEN);
 				if (cfn != null) {
 					filename = cfn;
 					ioropen(filename);
@@ -115,7 +231,7 @@ public class IORCalc : Gtk.Application {
         aq = new GLib.SimpleAction("save",null);
         aq.activate.connect(() => {
 				if(filename == null) {
-					var cfn = run_chooser( Gtk.FileChooserAction.SAVE);
+					var cfn = IChooser.chooser( Gtk.FileChooserAction.SAVE);
 					filename = cfn;
 				}
 				if(filename != null) {
@@ -126,7 +242,7 @@ public class IORCalc : Gtk.Application {
 
         aq = new GLib.SimpleAction("saveas",null);
         aq.activate.connect(() => {
-				var cfn = run_chooser( Gtk.FileChooserAction.SAVE);
+				var cfn = IChooser.chooser( Gtk.FileChooserAction.SAVE);
 				if (cfn != null) {
 					filename = cfn;
 					IORIO.save_file(filename, udata);
@@ -157,6 +273,7 @@ public class IORCalc : Gtk.Application {
 		set_accels_for_action ("win.calc", { "<Primary>c" });
 		set_accels_for_action ("win.save", { "<Primary>s" });
 		set_accels_for_action ("win.open", { "<Primary>o" });
+		set_accels_for_action ("win.quit", { "<Primary>q" });
 
         aq = new GLib.SimpleAction("quit",null);
         aq.activate.connect(() => {
@@ -202,8 +319,7 @@ public class IORCalc : Gtk.Application {
 		show_cert.clicked.connect(() => {
 				var fn = Util.mktempname();
 				IORData.pcert(udata, cdata, fn, 1);
-				certwindow();
-				cw_load_file(fn);
+				new CertWindow(udata, cdata).load_file(fn);
 			});
 
 		bbox.add(run_calc);
@@ -216,8 +332,6 @@ public class IORCalc : Gtk.Application {
     }
 
 	private void set_menu_states(bool is_ok) {
-//		set_menu_state("save", is_ok);
-//		set_menu_state("saveas", is_ok);
 		set_menu_state("calc", is_ok);
 	}
 
@@ -247,41 +361,6 @@ public class IORCalc : Gtk.Application {
 		if(ac != null)
 			ac.set_enabled(state);
     }
-
-	private string? run_chooser(Gtk.FileChooserAction action, string fty="json") {
-		string fn = null;
-		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog (
-			"IOR Data File",
-			window, action,
-			"_Cancel",
-			Gtk.ResponseType.CANCEL,
-			(action == Gtk.FileChooserAction.SAVE) ? "_Save" : "_Open",
-			Gtk.ResponseType.ACCEPT);
-
-		fc.set_modal(true);
-		fc.select_multiple = false;
-		var filter = new Gtk.FileFilter ();
-		if(fty == "json") {
-			filter.set_filter_name ("JSON files");
-			filter.add_pattern ("*.json");
-		} else {
-			filter.set_filter_name ("Text files");
-			filter.add_pattern ("*.txt");
-		}
-		fc.add_filter (filter);
-		filter = new Gtk.FileFilter ();
-		filter.set_filter_name ("All Files");
-		filter.add_pattern ("*");
-		fc.add_filter (filter);
-
-		var id = fc.run();
-		if (id == Gtk.ResponseType.ACCEPT) {
-			fn = fc.get_file().get_path ();
-		}
-		fc.close();
-		fc.destroy();
-		return fn;
-	}
 
 	private void populate_grid() {
 		string tlabs[]={"Names", "Hull", "AFloat/Prop","Rig"};
@@ -360,87 +439,6 @@ public class IORCalc : Gtk.Application {
 			} else {
 				grid.attach(lab, col, row, 4, 1);
 			}
-		}
-	}
-
-
-	public void certwindow() {
-		var w = new Gtk.Window();
-		w.set_title("IOR Certifiate");
-		w.set_modal(true);
-		w.set_transient_for (window);
-		w.set_default_size (1200, 800);
-
-		var vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-		certview = new Gtk.TextView();
-		certview.monospace = true;
-		certview.editable = false;
-
-		var scrolled = new Gtk.ScrolledWindow (null, null);
-		scrolled.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
-		scrolled.add (certview);
-		vbox.pack_start (scrolled, true, true, 0);
-
-		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
-		bbox.set_layout (Gtk.ButtonBoxStyle.SPREAD);
-		bbox.set_spacing (5);
-
-		var b1 = new Gtk.Button.with_label ("Save to file");
-		var b2 = new Gtk.Button.with_label ("Print");
-		var b3 = new Gtk.Button.with_label ("Close");
-
-
-		if(Environment.find_program_in_path("lp") != null) {
-			b1.clicked.connect(() => {
-					var fn = Util.mktempname();
-					IORData.pcert(udata, cdata, fn, 2);
-					try {
-						string[] args = {"lp", fn};
-						Pid pid;
-						Process.spawn_async ("/",
-											 args,
-											 null,
-											 SpawnFlags.SEARCH_PATH|SpawnFlags.DO_NOT_REAP_CHILD,
-											 null, out pid);
-						ChildWatch.add (pid, (pid, status) => {
-								Process.close_pid (pid);
-								FileUtils.unlink(fn);
-							});
-					} catch (SpawnError e) {
-						FileUtils.unlink(fn);
-						print ("Error: %s\n", e.message);
-					}
-				});
-		} else {
-			b2.sensitive = false;
-		}
-		b1.clicked.connect(() => {
-				var fn = run_chooser( Gtk.FileChooserAction.SAVE, "txt");
-				if (fn != null) {
-					IORData.pcert(udata, cdata, fn, 2);
-				}
-			});
-
-		b3.clicked.connect(() => {
-				w.destroy();
-			});
-		bbox.add (b1);
-		bbox.add (b2);
-		bbox.add (b3);
-		vbox.pack_start (bbox, false, false, 0);
-		w.add(vbox);
-		w.show_all();
-	}
-
-	public void cw_load_file(string fn) {
-		if (fn != null) {
-			try {
-				string buf;
-				if(FileUtils.get_contents(fn, out buf)) {
-					certview.buffer.text = buf;
-				}
-			} catch {}
-			FileUtils.unlink(fn);
 		}
 	}
 
