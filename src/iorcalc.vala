@@ -1,17 +1,28 @@
 using Gtk;
 
 namespace IChooser {
-	string? chooser(Gtk.FileChooserAction action, string fty="json") {
-		string fn = null;
+	Gtk.FileChooserDialog chooser(Gtk.Window w, string? _fn,
+								   Gtk.FileChooserAction action, string fty="json") {
 		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog (
 			"IOR Data File",
-			null, action,
+			w, action,
 			"_Cancel",
 			Gtk.ResponseType.CANCEL,
 			(action == Gtk.FileChooserAction.SAVE) ? "_Save" : "_Open",
 			Gtk.ResponseType.ACCEPT);
 
 		fc.set_modal(true);
+        if (action == Gtk.FileChooserAction.SAVE && _fn != null) {
+            try {
+				var fn = Path.get_basename(_fn);
+				var dn = Path.get_dirname(_fn);
+				var fl = File.new_for_path (dn);
+				fc.set_current_folder(fl);
+				fc.set_current_name(fn);
+			} catch (Error e) {
+				stderr.printf(" Chooser %s\n", e.message);
+			}
+		}
 		fc.select_multiple = false;
 		var filter = new Gtk.FileFilter ();
 		if(fty == "json") {
@@ -26,14 +37,8 @@ namespace IChooser {
 		filter.set_filter_name ("All Files");
 		filter.add_pattern ("*");
 		fc.add_filter (filter);
-
-		var id = fc.run();
-		if (id == Gtk.ResponseType.ACCEPT) {
-			fn = fc.get_file().get_path ();
-		}
-		fc.close();
-		fc.destroy();
-		return fn;
+		fc.show();
+		return fc;
 	}
 }
 
@@ -48,14 +53,16 @@ public class CertWindow : Gtk.Window {
 		certview = new Gtk.TextView();
 		certview.monospace = true;
 		certview.editable = false;
+		certview.valign = Gtk.Align.FILL;
+		certview.vexpand = true;
 
-		var scrolled = new Gtk.ScrolledWindow (null, null);
+		var scrolled = new Gtk.ScrolledWindow ();
 		scrolled.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
-		scrolled.add (certview);
-		vbox.pack_start (scrolled, true, true, 0);
+		scrolled.set_child (certview);
 
-		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
-		bbox.set_layout (Gtk.ButtonBoxStyle.SPREAD);
+		vbox.append (scrolled);
+
+		var bbox = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 1);
 		bbox.set_spacing (5);
 
 		var b1 = new Gtk.Button.with_label ("Save to file");
@@ -63,7 +70,7 @@ public class CertWindow : Gtk.Window {
 		var b3 = new Gtk.Button.with_label ("Close");
 
 		if(Environment.find_program_in_path("lp") != null) {
-			b1.clicked.connect(() => {
+			b2.clicked.connect(() => {
 					var fn = Util.mktempname();
 					IORData.pcert(u, c, fn, 2);
 					try {
@@ -86,22 +93,33 @@ public class CertWindow : Gtk.Window {
 		} else {
 			b2.sensitive = false;
 		}
+
 		b1.clicked.connect(() => {
-				var fn = IChooser.chooser( Gtk.FileChooserAction.SAVE, "txt");
-				if (fn != null) {
-					IORData.pcert(u, c, fn, 2);
-				}
+				var fc = IChooser.chooser(this, null, Gtk.FileChooserAction.SAVE, "txt");
+				fc.response.connect((result) => {
+						if (result== Gtk.ResponseType.ACCEPT) {
+							var fn = fc.get_file().get_path ();
+							IORData.pcert(u, c, fn, 2);
+						}
+						fc.close();
+					});
 			});
 
 		b3.clicked.connect(() => {
 				destroy();
 			});
-		bbox.add (b1);
-		bbox.add (b2);
-		bbox.add (b3);
-		vbox.pack_start (bbox, false, false, 0);
-		add(vbox);
-		show_all();
+
+		b1.hexpand = true;
+		b2.hexpand = true;
+		b3.hexpand = true;
+		bbox.hexpand = true;
+
+		bbox.append (b1);
+		bbox.append (b2);
+		bbox.append (b3);
+		vbox.append (bbox);
+		set_child(vbox);
+		show();
 	}
 
 	public void load_file(string fn) {
@@ -192,50 +210,45 @@ public class IORCalc : Gtk.Application {
 		cdata = IORData.allocate_calc_rec();
 		window = new Gtk.ApplicationWindow(this);
 		add_window (window);
-		window.window_position = Gtk.WindowPosition.CENTER;
         window.set_default_size (800, 720);
 		nb = new Gtk.Notebook();
 
 		var header_bar = new Gtk.HeaderBar ();
 		header_bar.decoration_layout = "icon:menu,minimize,maximize,close";
-		header_bar.set_title ("IOR Rating Calculator");
-		header_bar.show_close_button = true;
-
+		header_bar.set_title_widget (new Gtk.Label("IOR Rating Calculator"));
+		header_bar.set_show_title_buttons(true);
 		window.set_titlebar (header_bar);
 
 		var sbuilder = new Builder.from_resource("/org/stronnag/iorcalc/iorcalc.ui");
         var mm = sbuilder.get_object("menubar") as GLib.MenuModel;
 
 		var fsmenu_button = new Gtk.MenuButton();
-        Gtk.Image img = new Gtk.Image.from_icon_name("open-menu-symbolic",
-                                                     Gtk.IconSize.BUTTON);
-        var childs = fsmenu_button.get_children();
-        fsmenu_button.remove(childs.nth_data(0));
-        fsmenu_button.add(img);
-		var pop = new Gtk.Popover.from_model(fsmenu_button, mm);
+		fsmenu_button.icon_name = "open-menu-symbolic";
+		var pop = new Gtk.PopoverMenu.from_model(mm);
         fsmenu_button.set_popover(pop);
-        fsmenu_button.set_use_popover(false);
         header_bar.pack_end (fsmenu_button);
 
         var aq = new GLib.SimpleAction("open",null);
         aq.activate.connect(() => {
 				show_cert.sensitive = false;
-				var cfn = IChooser.chooser( Gtk.FileChooserAction.OPEN);
-				if (cfn != null) {
-					filename = cfn;
-					ioropen(filename);
-					textview.buffer.text = "";
-				}
+				var fc = IChooser.chooser(window, filename, Gtk.FileChooserAction.OPEN);
+				fc.response.connect((result) => {
+						if (result== Gtk.ResponseType.ACCEPT) {
+							var fn = fc.get_file().get_path ();
+							filename = fn;
+							ioropen(filename);
+							textview.buffer.text = "";
+						}
+						fc.close();
+					});
 			});
         window.add_action(aq);
 
         aq = new GLib.SimpleAction("save",null);
         aq.activate.connect(() => {
 				if(filename == null) {
-					var cfn = IChooser.chooser( Gtk.FileChooserAction.SAVE);
-					filename = cfn;
-				}
-				if(filename != null) {
+					save_new_file();
+				} else {
 					IORIO.save_file(filename, udata);
 				}
 			});
@@ -243,11 +256,7 @@ public class IORCalc : Gtk.Application {
 
         aq = new GLib.SimpleAction("saveas",null);
         aq.activate.connect(() => {
-				var cfn = IChooser.chooser( Gtk.FileChooserAction.SAVE);
-				if (cfn != null) {
-					filename = cfn;
-					IORIO.save_file(filename, udata);
-				}
+				save_new_file();
 			});
         window.add_action(aq);
 
@@ -286,31 +295,23 @@ public class IORCalc : Gtk.Application {
 		udata = IORIO.read_file(filename);
 		populate_grid();
 
-		try {
-			var pix =  new Gdk.Pixbuf.from_resource("/org/stronnag/iorcalc/iorcalc.svg");
-			window.set_icon(pix);
-		} catch (Error e) {
-			stderr.printf("failed to set icon %s\n", e.message);
-			window.set_icon_name("iorcalc");
-		}
-
+		window.set_icon_name("iorcalc");
 		var is_ok = IORData.is_data_valid(udata);
 		set_menu_states(is_ok);
 
 		var vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-		vbox.pack_start (nb,false,false,0);
+		vbox.append (nb);
 
 		textview = new Gtk.TextView();
 		textview.monospace = true;
 		textview.editable = false;
+		textview.vexpand = true;
 
-
-		var scrolled = new Gtk.ScrolledWindow (null, null);
+		var scrolled = new Gtk.ScrolledWindow ();
 		scrolled.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
-        scrolled.add (textview);
+        scrolled.set_child (textview);
 
-		var bbox = new Gtk.ButtonBox (Gtk.Orientation.HORIZONTAL);
-		bbox.set_layout (Gtk.ButtonBoxStyle.SPREAD);
+		var bbox = new Gtk.Box (Gtk.Orientation.HORIZONTAL,2);
 		bbox.set_spacing (5);
 		var run_calc = new Gtk.Button.with_label("Calculate Rating");
 		run_calc.set_action_name("win.calc");
@@ -323,14 +324,30 @@ public class IORCalc : Gtk.Application {
 				new CertWindow(udata, cdata).load_file(fn);
 			});
 
-		bbox.add(run_calc);
-		bbox.add(show_cert);
+		bbox.hexpand = true;
+ 		run_calc.hexpand = true;
+		show_cert.hexpand = true;
 
-		vbox.pack_start (scrolled, true, true, 0);
-		vbox.pack_start (bbox, false, false, 0);
-		window.add (vbox);
-        window.show_all();
+		bbox.prepend(run_calc);
+		bbox.append(show_cert);
+
+		vbox.append (scrolled);
+		vbox.append (bbox);
+		window.set_child (vbox);
+        window.show();
     }
+
+	private void save_new_file() {
+		var fc = IChooser.chooser(window, filename, Gtk.FileChooserAction.SAVE);
+		fc.response.connect((result) => {
+				if (result== Gtk.ResponseType.ACCEPT) {
+					var fn = fc.get_file().get_path ();
+					filename = fn;
+					IORIO.save_file(filename, udata);
+				}
+				fc.close();
+			});
+	}
 
 	private void set_menu_states(bool is_ok) {
 		set_menu_state("calc", is_ok);
@@ -393,7 +410,7 @@ public class IORCalc : Gtk.Application {
 			lab = new Gtk.Label(strdup(ef.prompt));
 			lab.justify = Gtk.Justification.LEFT;
 			lab.xalign = 0;
-			lab.set_padding(2,0);
+//			lab.set_padding(2,0);
 			if (ef.flag != IORData.EditType.ED_T) {
 				grid.attach(lab, col, row);
 				col++;
@@ -418,7 +435,9 @@ public class IORCalc : Gtk.Application {
 					e.text = s;
 				}
 				int j = i;
-				e.focus_out_event.connect((ev) => {
+				var ev = new  EventControllerFocus();
+				e.add_controller(ev);
+				ev.leave.connect(() => {
 						var ent = EList.get(j);
 						if (ent != null) {
 							var wtext = ent.get_text();
@@ -432,9 +451,7 @@ public class IORCalc : Gtk.Application {
 								set_menu_state("calc", is_ok);
 							}
 						}
-						return false;
 					});
-
 				grid.attach(e, col, row);
 				col++;
 			} else {
