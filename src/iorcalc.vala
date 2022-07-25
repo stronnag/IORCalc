@@ -109,6 +109,10 @@ public class CertWindow : Gtk.Window {
 				destroy();
 			});
 
+		b1.halign = Gtk.Align.CENTER;
+		b2.halign = Gtk.Align.CENTER;
+		b3.halign = Gtk.Align.CENTER;
+
 		b1.hexpand = true;
 		b2.hexpand = true;
 		b3.hexpand = true;
@@ -327,6 +331,8 @@ public class IORCalc : Gtk.Application {
 		bbox.hexpand = true;
  		run_calc.hexpand = true;
 		show_cert.hexpand = true;
+		run_calc.halign = Gtk.Align.CENTER;
+		show_cert.halign = Gtk.Align.CENTER;
 
 		bbox.prepend(run_calc);
 		bbox.append(show_cert);
