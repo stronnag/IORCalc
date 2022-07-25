@@ -63,7 +63,7 @@ public class CertWindow : Gtk.Window {
 		var b3 = new Gtk.Button.with_label ("Close");
 
 		if(Environment.find_program_in_path("lp") != null) {
-			b1.clicked.connect(() => {
+			b2.clicked.connect(() => {
 					var fn = Util.mktempname();
 					IORData.pcert(u, c, fn, 2);
 					try {
