@@ -117,25 +117,11 @@ public class CertWindow : Gtk.Window {
 	}
 }
 
-public class EList : Object {
-	public struct list {
-		public int idx;
-		public Gtk.Entry e;
-	}
-
-	private static list [] elist = {};
-
-	public static new Gtk.Entry? get(int j) {
-		foreach(var e in elist) {
-			if (j == e.idx)
-				return e.e;
-		}
-		return null;
-	}
-
-	public static void add(int j, Gtk.Entry e) {
-		elist += list(){idx = j, e=e};
-	}
+public class IEntry : Gtk.Entry {
+        public int  idx;
+        public IEntry(int _idx) {
+                idx = _idx;
+        }
 }
 
 namespace Util {
@@ -155,6 +141,16 @@ public class IORCalc : Gtk.Application {
 	private string? filename;
 	private Gtk.TextView textview;
 	private Gtk.Button show_cert;
+	private IEntry[] elist = {};
+
+	public IEntry? find_ientry(int i) {
+		foreach(var e in elist) {
+			if (e.idx == i) {
+				return e;
+			}
+                }
+		return null;
+	}
 
 	public IORCalc () {
 		Object(application_id: "org.stronnag.iorcalc",
@@ -350,9 +346,11 @@ public class IORCalc : Gtk.Application {
 			if (ok != 0)
 				break;
 			if(ef.flag != IORData.EditType.ED_T) {
-				var ent = EList.get(i);
-				var s = IORData.to_string(udata, i);
-				ent.text = s;
+				var ent = find_ientry(i);
+				if (ent != null) {
+					var s = IORData.to_string(udata, i);
+					ent.text = s;
+				}
 			}
 		}
 	}
@@ -366,7 +364,7 @@ public class IORCalc : Gtk.Application {
 	private void populate_grid() {
 		string tlabs[]={"Names", "Hull", "AFloat/Prop","Rig"};
 		Gtk.Label lab;
-		Gtk.Entry e;
+		IEntry e;
 		Gtk.Grid grid = null;
 
 		int row = -1;
@@ -397,8 +395,8 @@ public class IORCalc : Gtk.Application {
 			if (ef.flag != IORData.EditType.ED_T) {
 				grid.attach(lab, col, row);
 				col++;
-				e = new Gtk.Entry();
-				EList.add(i, e);
+				e = new IEntry(i);
+				elist += e;
 				e.width_chars = ef.len;
 				switch(ef.flag) {
 				case IORData.EditType.ED_F:
@@ -417,23 +415,22 @@ public class IORCalc : Gtk.Application {
 					var s = IORData.to_string(udata, i);
 					e.text = s;
 				}
-				int j = i;
+
+				var ent = e;
 				e.focus_out_event.connect((ev) => {
-						var ent = EList.get(j);
-						if (ent != null) {
-							var wtext = ent.get_text();
-							var utext = IORData.to_string(udata, j);
-							if(wtext != utext) {
-								IORData.update(wtext, udata, j);
-								var t = IORData.to_string(udata, j);
-								ent.set_text(t);
-								show_cert.sensitive = false;
-								var is_ok = IORData.is_data_valid(udata);
-								set_menu_state("calc", is_ok);
-							}
+						var wtext = ent.get_text();
+						var utext = IORData.to_string(udata, ent.idx);
+						if(wtext != utext) {
+							IORData.update(wtext, udata, ent.idx);
+							var t = IORData.to_string(udata, ent.idx);
+							ent.set_text(t);
+							show_cert.sensitive = false;
+							var is_ok = IORData.is_data_valid(udata);
+							set_menu_state("calc", is_ok);
 						}
 						return false;
 					});
+
 
 				grid.attach(e, col, row);
 				col++;
