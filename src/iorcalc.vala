@@ -260,7 +260,7 @@ public class IORCalc : Gtk.Application {
 			});
         window.add_action(aq);
 
-        aq = new GLib.SimpleAction("calc",null);
+		aq = new GLib.SimpleAction("calc",null);
         aq.activate.connect(() => {
 				var tfn = Path.build_filename(Environment.get_tmp_dir(), ".iorcalc-save.json");
 				IORIO.save_file(tfn, udata);
@@ -280,12 +280,29 @@ public class IORCalc : Gtk.Application {
 			});
         window.add_action(aq);
 
+		aq = new GLib.SimpleAction("about", null);
+        aq.activate.connect(() => {
+				var a = new AboutDialog();
+				a.version = IORCALC_VERSION_STRING;
+				a.authors = {"Jonathan Hudson mailto:jh+ior@daria.co.uk"};
+				a.copyright = "(c) Jonathan Hudson 1984-2022";
+				a.license_type = License.GPL_3_0;
+				a.logo_icon_name = "iorcalc";
+				a.program_name = "IORCalc";
+				a.website = "Github Repository https://github.com/stronnag/IORCalc";
+				a.documenters = {"Jonathan Hudson"};
+				a.comments = "Calculate IOR Ratings like it's 1988";
+				a.show();
+			});
+        window.add_action(aq);
+
 		set_accels_for_action ("win.calc", { "<Primary>c" });
 		set_accels_for_action ("win.save", { "<Primary>s" });
 		set_accels_for_action ("win.open", { "<Primary>o" });
+		set_accels_for_action ("win.about", { "F1" });
 		set_accels_for_action ("win.quit", { "<Primary>q" });
 
-        aq = new GLib.SimpleAction("quit",null);
+		aq = new GLib.SimpleAction("quit",null);
         aq.activate.connect(() => {
                 window.destroy();
             });
