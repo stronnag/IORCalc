@@ -284,12 +284,12 @@ public class IORCalc : Gtk.Application {
         aq.activate.connect(() => {
 				var a = new AboutDialog();
 				a.version = IORCALC_VERSION_STRING;
-				a.authors = {"Jonathan Hudson mailto:jh+ior@daria.co.uk"};
+				a.authors = {"Jonathan Hudson <jh+ior@daria.co.uk>"};
 				a.copyright = "(c) Jonathan Hudson 1984-2022";
 				a.license_type = License.GPL_3_0;
 				a.logo_icon_name = "iorcalc";
 				a.program_name = "IORCalc";
-				a.website = "Github Repository https://github.com/stronnag/IORCalc";
+				a.website = "https://github.com/stronnag/IORCalc";
 				a.documenters = {"Jonathan Hudson"};
 				a.comments = "Calculate IOR Ratings like it's 1988";
 				a.show();
