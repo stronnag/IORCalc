@@ -465,7 +465,7 @@ public class IORCalc : Gtk.Application {
 	}
 
 	public static int main (string[] args) {
-		set_prgname("org.stronnag.iorcalc"); // for gtk4 compat
+		Environment.set_prgname("org.stronnag.iorcalc"); // for gtk4 compat
         var ior = new IORCalc ();
         ior.run (args);
         return 0;
