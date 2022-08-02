@@ -38,7 +38,7 @@ class IORPrint : Object {
 			for(var i = 0; i < lbreak[0]; i++) {
 				var l2 = i+lbreak[0];
 				string s1 = lines[i];
-				string s2;
+				string? s2 = null;
 				if (l2 < lines.length) {
 					s2 = lines[l2];
 				}
@@ -46,12 +46,13 @@ class IORPrint : Object {
 					s2 = "";
 				}
 				s1 = s1.replace("\r","");
-				s2 = s1.replace("\r","");
+				s2 = s2.replace("\r","");
 				string s = "%-70s%s".printf(s1, s2);
 				llines += s;
 			}
 			lines = llines;
 			lbreak[0] = 0;
+			lbreak[1] = lines.length-1;
 		}
 		return string.joinv("\n", lines);
 	}
