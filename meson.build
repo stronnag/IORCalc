@@ -32,6 +32,7 @@ executable(
     dependency('gtk+-3.0'),
     dependency('gio-2.0'),
     dependency('json-glib-1.0'),
+    dependency('pangocairo'),
     deps,
     meson.get_compiler('vala').find_library('posix'),
     meson.get_compiler('c').find_library('m'),
@@ -44,4 +45,9 @@ executable(
 
 subdir('samples')
 subdir('data')
-meson.add_install_script('meson/post_install.sh')
+
+gnome.post_install(
+  glib_compile_schemas: true,
+  gtk_update_icon_cache: true,
+  update_desktop_database: true
+)

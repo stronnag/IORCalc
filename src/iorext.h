@@ -1,6 +1,12 @@
+#pragma once
+
 #include <stdint.h>
 #include <stdbool.h>
+#include <sys/types.h>
 #include "ior.h"
+
+
+#define CERT_LINES 66
 
 typedef enum  {
      EDIT_TYPE_ED_C = 0,
@@ -18,6 +24,11 @@ typedef struct edit_field {
      uint8_t row;
      uint8_t flag;
 } edit_field_t;
+
+typedef struct cert_pages {
+     char* *page1;
+     char* *page2;
+} cert_pages_t;
 
 extern int  get_field(int j, edit_field_t *ef);
 extern void update_rec(char *dt, void *u, int count);
@@ -47,6 +58,9 @@ extern void calc_prop(ior_rec_t *u, calc_rec_t *c);
 extern void calc_rig(ior_rec_t *u, calc_rec_t *c);
 extern void calc_rtg(ior_rec_t *u, calc_rec_t *c);
 extern char *show_rtg(ior_rec_t *u, calc_rec_t *c);
-extern void ior_cert(char *fp, ior_rec_t*, calc_rec_t*,  char *[][2], int *);
+extern void ior_cert(ior_rec_t*, calc_rec_t*, cert_pages_t*);
 extern void pcert(ior_rec_t *u, calc_rec_t *c, char *, int);
 extern char* report(ior_rec_t *u, calc_rec_t *c);
+
+extern cert_pages_t *new_cert_pages_t();
+extern void free_cert_pages_t(cert_pages_t*);
