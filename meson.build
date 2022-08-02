@@ -32,6 +32,7 @@ executable(
     dependency('gtk4'),
     dependency('gio-2.0'),
     dependency('json-glib-1.0'),
+    dependency('pangocairo'),
     deps,
     meson.get_compiler('vala').find_library('posix'),
     meson.get_compiler('c').find_library('m'),

@@ -1,3 +1,5 @@
+#pragma once
+
 /*
         ior_h   Header file for IOR program modules. This module
                 defines fixed CONSTANTS and strings, the i/o record

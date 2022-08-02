@@ -69,30 +69,15 @@ public class CertWindow : Gtk.Window {
 		var b2 = new Gtk.Button.with_label ("Print");
 		var b3 = new Gtk.Button.with_label ("Close");
 
-		if(Environment.find_program_in_path("lp") != null) {
-			b2.clicked.connect(() => {
-					var fn = Util.mktempname();
-					IORData.pcert(u, c, fn, 2);
-					try {
-						string[] args = {"lp", fn};
-						Pid pid;
-						Process.spawn_async ("/",
-											 args,
-											 null,
-											 SpawnFlags.SEARCH_PATH|SpawnFlags.DO_NOT_REAP_CHILD,
-											 null, out pid);
-						ChildWatch.add (pid, (pid, status) => {
-								Process.close_pid (pid);
-								FileUtils.unlink(fn);
-							});
-					} catch (SpawnError e) {
-						FileUtils.unlink(fn);
-						print ("Error: %s\n", e.message);
-					}
-				});
-		} else {
-			b2.sensitive = false;
-		}
+		b2.clicked.connect(() => {
+				var fn = Util.mktempname();
+				IORData.pcert(u, c, fn, 2);
+				var iorprt = new IORPrint();
+				if(iorprt.loadfile(fn)) {
+					iorprt.do_print(this);
+				}
+				FileUtils.unlink(fn);
+			});
 
 		b1.clicked.connect(() => {
 				var fc = IChooser.chooser(this, null, Gtk.FileChooserAction.SAVE, "txt");
