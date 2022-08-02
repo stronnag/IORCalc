@@ -1,4 +1,4 @@
-project('iorcalc', 'vala', 'c', version : '0.6.0')
+project('iorcalc', 'vala', 'c', version : '0.7.0')
 
 conf_data = configuration_data()
 conf_data.set('version', meson.project_version())
@@ -45,4 +45,9 @@ executable(
 
 subdir('samples')
 subdir('data')
-meson.add_install_script('meson/post_install.sh')
+
+gnome.post_install(
+  glib_compile_schemas: true,
+  gtk_update_icon_cache: true,
+  update_desktop_database: true
+)
