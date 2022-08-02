@@ -37,13 +37,17 @@ class IORPrint : Object {
 			string []llines={};
 			for(var i = 0; i < lbreak[0]; i++) {
 				var l2 = i+lbreak[0];
+				string s1 = lines[i];
 				string s2;
 				if (l2 < lines.length) {
 					s2 = lines[l2];
-				} else {
+				}
+				if (s2 == null) {
 					s2 = "";
 				}
-				string s = "%-70s%s".printf(lines[i], s2);
+				s1 = s1.replace("\r","");
+				s2 = s1.replace("\r","");
+				string s = "%-70s%s".printf(s1, s2);
 				llines += s;
 			}
 			lines = llines;
