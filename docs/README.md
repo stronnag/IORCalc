@@ -71,7 +71,7 @@ When the **Show Certificate** is invoked, the certificate will be displayed in a
 There are three options:
 
 * **Save to file** : Saves the certificate as a text document (two separate pages).
-* **Print** : Prints the certificate as separate (two) pages. This is only available on POSIX (Linux, *BSD, MacOS) platforms that have a `lp` command.
+* **Print** : Prints the certificate, using the OS Print Dialog. If `portrait` is selected, the certificate is printed on two sheets, if `landscape`, the certificate is printed on a single sheet. Print to file (PDF, PS, SVG, XPS) as available in the native dialogue.
 * **Close** : Closes the certificate window.
 
 ## Bug Reports
@@ -80,6 +80,6 @@ If `iorcalc` fails to calculate a rating, or calculates an incorrect rating, ple
 
 ## Author, Licence
 
-(c) Jonathan Hudson 1984-2022. 
+(c) Jonathan Hudson 1984-2022.
 
 GPL3 or later.
