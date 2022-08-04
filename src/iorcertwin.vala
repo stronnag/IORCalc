@@ -79,6 +79,12 @@ public class CertWindow : Gtk.Window {
         dg.add_action(qaq);
 		this.insert_action_group("cert", dg);
 
+		iorprt.font_changed.connect((s) => {
+				if(certview.buffer.text != null) {
+					set_cert_text_font(s);
+				}
+			});
+
 		evtc.key_pressed.connect((kv, kc, mfy) => {
 				if((mfy & Gdk.ModifierType.CONTROL_MASK) != 0) {
 					switch(kv) {
@@ -110,9 +116,19 @@ public class CertWindow : Gtk.Window {
 				string buf;
 				if(FileUtils.get_contents(fn, out buf)) {
 					certview.buffer.text = buf;
+					string prfont = iorprt.get_print_font();
+					set_cert_text_font(prfont);
 				}
 			} catch {}
 			FileUtils.unlink(fn);
 		}
+	}
+
+	private void set_cert_text_font(string fontname) {
+		var css = "textview {font-family: %s;}".printf(fontname);
+		var provider = new CssProvider();
+		provider.load_from_data(css.data);
+		var stylec = certview.get_style_context();
+		stylec.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 	}
 }
