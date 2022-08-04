@@ -19,13 +19,14 @@ It is largely complete, missing only some esoteric rig options (Gaff rig etc), a
 
 Requirements:
 
-* GTK 3 and json-glib development files
+* GTK 4 and json-glib development files (gtk3 for legacy branch).
 * Vala and C compilers
 * Meson / Ninja build system
 
 ### Linux, FreeBSD
 
-* Common GTK packages (meson (and ninja), vala, gtk+3, json-glib)
+* Common GTK packages (meson (and ninja), vala, gtk(3 or 4), json-glib); the `master` branch is `gtk4`, the `gtk3` branch is (pause ...) `gtk3`.
+
 * Easily built from source
     ```
         # Once (setup)
@@ -33,14 +34,12 @@ Requirements:
         # Build and install to ~/.local/bin (add to PATH if necessary)
         meson install -C build
    ```
-* Output by default to current working directory.
-
 ### Windows
 
 * Can be built from source using Msys2.
     ```
         pacman -Syu
-        pacman -S gtk3 vala meson ninja json-glib
+        pacman -S gtk4 vala meson ninja json-glib
         meson build --buildtype=release --strip
 		meson install -C build
         ```
@@ -49,7 +48,7 @@ Requirements:
 * Use Homebrew:
     ```
         # install requirements:
-        brew install meson vala gtk+3 json-glib
+        brew install meson vala gtk4 json-glib
         # Once (setup)
         meson build --buildtype=release --strip --prefix=~/.local
         # Build and install to ~/.local/bin (add to PATH if necessary)
@@ -57,9 +56,16 @@ Requirements:
    ```
 * If there are missing icons, it may be necessary to `brew install adwaita-icon-theme`.
 
+* It seems that GTK printing for MacOS is only functional using the `master` (gtk4) branch.
+
+### Legacy GTK+-3.0 branch
+
+There is also a `gtk3` branch. This is functionally equivalent to the GTK4/`master` branch.
+In the above build instructions, replace `gtk4` with the equivalent `gtk3` / `gtk+-3.0` package name.
+
 ## Binary Release Media
 
-There is a Debian package (`*.deb`) and Windows Installer in the [release area](https://github.com/stronnag/IORCalc/releases).
+There is a Debian package (`*.deb`) and Windows Installer in the [release area](https://github.com/stronnag/IORCalc/releases). These are both built from the **gtk3** branch.
 
 ## Example files
 
