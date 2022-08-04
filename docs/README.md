@@ -14,6 +14,10 @@ Calculate IOR ratings like it's 1988 again.
 
 ## Usage
 
+### Sample Data
+
+Two sample data files are in the repositry `samples` directory. These are also provided in the binary packages, in `$INSTALLTION_ROOT/share/doc/iorcalc/` (where `$INSTALLTION_ROOT` is the base of the installed package). Using the provided binary packages, `/usr` on Linux and `Program Files\iorcalc` on Windows.
+
 ### Data Entry
 
 Launch from a desktop icon or from the command line. If invoked from the command line, a data file may be given; this probably means drag and drop will work in Windows.
@@ -79,7 +83,7 @@ There are three options:
 
 * **Set printer font**. By default, the system default `Monospace` font is used. This optiom presents a Font Button allowing an alternate font to be used. This is also cached for future use
      ![certificate](assets/iorcalc7.png)
-    
+
     Clicking on the Font Button opens a larger dialog allowing selection of a different font.
      ![certificate](assets/iorcalc8.png)
 
@@ -87,8 +91,8 @@ There are three options:
 
 #### Printing details
 
-* If `portrait` is selected, the selected font and size are used without further analysis. A 10 point font should fit on an A4 / US Letter page. Most operating systems have a `Preview` option to verify that the font will allow output page coverage. 
-* If `landscape` is selected, the font is scaled to fit the two pages of the certificate  on the printer page. On A4, this results in a readable c. 7pt font. The font will not be scaled above the user specified size. 
+* If `portrait` is selected, the selected font and size are used without further analysis. A 10 point font should fit on an A4 / US Letter page. Most operating systems have a `Preview` option to verify that the font will allow output page coverage.
+* If `landscape` is selected, the font is scaled to fit the two pages of the certificate  on the printer page. On A4, this results in a readable c. 7pt font. The font will not be scaled above the user specified size.
 * On MacOS, it is probably necessary to build against GTK4 to get working printing.
 
 ## Bug Reports
