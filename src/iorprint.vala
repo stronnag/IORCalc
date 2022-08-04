@@ -1,15 +1,22 @@
 using Gtk;
 
 class IORPrint : Object {
-	private static PrintSettings? settings;
-	private const int FONT_SIZE = 10;
-	private  Pango.Layout layout;
+	private PrintSettings? settings;
+	private PageSetup? page_setup;
+	private Pango.Layout layout;
 	private int lbreak[2];
-	string[] lines;
+	private string[] lines;
+	private Pango.FontDescription fdesc;
+	private string prfont;
+	private KeyFile kf;
 
-	public IORPrint() {
+	public IORPrint(KeyFile _kf) {
 		lines = {};
 		lbreak = {0,0};
+		kf = _kf;
+		if (settings == null) {
+			find_print_settings();
+		}
 	}
 
 	public bool loadfile(string fn) {
@@ -36,9 +43,9 @@ class IORPrint : Object {
 		if(landscape) {
 			string []llines={};
 			for(var i = 0; i < lbreak[0]; i++) {
-				var l2 = i+lbreak[0];
+				string? s2=null;
 				string s1 = lines[i];
-				string? s2 = null;
+				var l2 = i+lbreak[0];
 				if (l2 < lines.length) {
 					s2 = lines[l2];
 				}
@@ -52,22 +59,49 @@ class IORPrint : Object {
 			}
 			lines = llines;
 			lbreak[0] = 0;
-			lbreak[1] = lines.length-1;
 		}
 		return string.joinv("\n", lines);
 	}
 
+	private void find_print_settings() {
+		try {
+			settings = new PrintSettings.from_key_file (kf, "iorprint");
+		} catch (Error e) {
+			print("kfs: %s\n", e.message);
+		}
+		try {
+			page_setup = new PageSetup.from_key_file (kf, "iorpage");
+		} catch (Error e) {
+			page_setup = new PageSetup();
+			print("kfp: %s\n", e.message);
+		}
+
+		if(prfont == null) {
+			try {
+				prfont = kf.get_string ("iorcalc", "pr-font");
+			} catch (Error e) {
+				prfont = "Monospace 10";
+				print("kff: %s\n", e.message);
+			}
+		}
+		fdesc = Pango.FontDescription.from_string (prfont);
+	}
+
 	public void do_print(Gtk.Window? w) {
 		var printop = new Gtk.PrintOperation ();
-		printop.embed_page_setup = true;
 		if(settings != null) {
 			printop.print_settings = settings;
+			var ps = printop.get_default_page_setup();
+			if (ps == null) {
+				printop.set_default_page_setup(page_setup);
+			}
 		}
+		printop.embed_page_setup = true;
 		printop.begin_print.connect((ctxt) => {
 				double height = ctxt.get_height() * Pango.SCALE;
 				double width = ctxt.get_width() * Pango.SCALE;
-				var fsize = FONT_SIZE * Pango.SCALE;
-				var fdesc = Pango.FontDescription.from_string("Monospace");
+				var fsize = fdesc.get_size ();
+
 				if(width > height) {
 					string s = generate_string(true);
 					for(var i =0 ; i < 10; i++) {
@@ -134,12 +168,51 @@ class IORPrint : Object {
 				cr.stroke();
 			});
 		try {
-           var res = printop.run (Gtk.PrintOperationAction.PRINT_DIALOG, w);
-		     if (res == PrintOperationResult.APPLY) {
-				 settings = printop.print_settings ;
-			 }
+            var res = printop.run (Gtk.PrintOperationAction.PRINT_DIALOG, w);
+			if (res == PrintOperationResult.APPLY) {
+				settings = printop.print_settings ;
+				settings.to_key_file (kf, "iorprint");
+				var ps = printop.get_default_page_setup();
+				if (ps != null) {
+					ps.to_key_file (kf, "iorpage");
+				}
+				kf.set_string ("iorcalc", "pr-font", prfont);
+			}
         } catch (Error e) {
             warning ("Error printing: %s", e.message);
         }
+	}
+
+	public void do_font(Window? w) {
+		var window = new Gtk.Window();
+		window.set_modal(true);
+		window.set_transient_for(w);
+		window.title = "Printer Font Selection";
+		var fc = new Gtk.FontButton();
+		fc.set_font_desc(fdesc);
+		fc.set_use_font(true);
+		fc.title = "Select printer font";
+		fc.set_preview_text("IOR LIKE IT'S 1988 AGAIN - PRINTER FONT");
+		fc.set_filter_func((f1,f2) => {
+				if(f1.is_monospace()) {
+					if (f2.get_face_name() == "Regular" ||
+						f2.get_face_name() == "Normal") {
+						return true;
+					}
+				}
+				return false;
+			});
+
+		fc.font_set.connect(() => {
+				fdesc = fc.get_font_desc();
+				print("Got %s\n", fdesc.to_string());
+			});
+
+		window.add (fc);
+		window.destroy.connect(() => {
+				fc.destroy();
+			});
+
+		window.show_all();
 	}
 }
