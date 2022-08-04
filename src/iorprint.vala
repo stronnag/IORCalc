@@ -7,7 +7,6 @@ class IORPrint : Object {
 	private int lbreak[2];
 	private string[] lines;
 	private Pango.FontDescription fdesc;
-	private string prfont;
 	private KeyFile kf;
 
 	public IORPrint(KeyFile _kf) {
@@ -76,13 +75,12 @@ class IORPrint : Object {
 			print("kfp: %s\n", e.message);
 		}
 
-		if(prfont == null) {
-			try {
-				prfont = kf.get_string ("iorcalc", "pr-font");
-			} catch (Error e) {
-				prfont = "Monospace 10";
-				print("kff: %s\n", e.message);
-			}
+		string prfont;
+		try {
+			prfont = kf.get_string ("iorcalc", "pr-font");
+		} catch (Error e) {
+			prfont = "Monospace 10";
+			print("kff: %s\n", e.message);
 		}
 		fdesc = Pango.FontDescription.from_string (prfont);
 	}
@@ -176,7 +174,6 @@ class IORPrint : Object {
 				if (ps != null) {
 					ps.to_key_file (kf, "iorpage");
 				}
-				kf.set_string ("iorcalc", "pr-font", prfont);
 			}
         } catch (Error e) {
             warning ("Error printing: %s", e.message);
@@ -205,7 +202,7 @@ class IORPrint : Object {
 
 		fc.font_set.connect(() => {
 				fdesc = fc.get_font_desc();
-				print("Got %s\n", fdesc.to_string());
+				kf.set_string ("iorcalc", "pr-font", fdesc.to_string());
 			});
 
 		window.add (fc);
