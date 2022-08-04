@@ -9,6 +9,8 @@ class IORPrint : Object {
 	private Pango.FontDescription fdesc;
 	private KeyFile kf;
 
+	public signal void font_changed(string fn);
+
 	public IORPrint(KeyFile _kf) {
 		lines = {};
 		lbreak = {0,0};
@@ -65,24 +67,25 @@ class IORPrint : Object {
 	private void find_print_settings() {
 		try {
 			settings = new PrintSettings.from_key_file (kf, "iorprint");
-		} catch (Error e) {
-			print("kfs: %s\n", e.message);
-		}
+		} catch {}
+
 		try {
 			page_setup = new PageSetup.from_key_file (kf, "iorpage");
 		} catch (Error e) {
 			page_setup = new PageSetup();
-			print("kfp: %s\n", e.message);
 		}
+		string prfont = get_print_font();
+		fdesc = Pango.FontDescription.from_string (prfont);
+	}
 
+	public string? get_print_font() {
 		string prfont;
 		try {
-				prfont = kf.get_string ("iorcalc", "pr-font");
+			prfont = kf.get_string ("iorcalc", "pr-font");
 		} catch (Error e) {
 			prfont = "Monospace 10";
-			print("kff: %s\n", e.message);
 		}
-		fdesc = Pango.FontDescription.from_string (prfont);
+		return prfont;
 	}
 
 	public void do_print(Gtk.Window? w) {
@@ -204,6 +207,7 @@ class IORPrint : Object {
 		fc.font_set.connect(() => {
 				fdesc = fc.get_font_desc();
 				kf.set_string ("iorcalc", "pr-font", fdesc.to_string());
+				font_changed(fdesc.get_family());
 			});
 
 		window.set_child (fc);
