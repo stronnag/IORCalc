@@ -209,10 +209,6 @@ class IORPrint : Object {
 			});
 
 		window.add (fc);
-		window.destroy.connect(() => {
-				fc.destroy();
-			});
-
 		window.show_all();
 	}
 }
