@@ -206,15 +206,9 @@ class IORPrint : Object {
 
 		fc.font_set.connect(() => {
 				fdesc = fc.get_font_desc();
-				print("Got %s\n", fdesc.to_string());
 			});
 
 		window.set_child (fc);
-		window.close_request.connect(() => {
-				fc.destroy();
-				return false;
-			});
-
 		window.present();
 	}
 }
