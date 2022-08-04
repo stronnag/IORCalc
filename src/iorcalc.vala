@@ -150,7 +150,9 @@ public class IORCalc : Gtk.Application {
 						if (result== Gtk.ResponseType.ACCEPT) {
 							var fn = fc.get_file().get_path ();
 							var dn = fc.get_current_folder().get_path();
-							kf.kf.set_string("iorcalc", "in-dir", dn);
+							if (dn != null) {
+								kf.kf.set_string("iorcalc", "in-dir", dn);
+							}
 							filename = fn;
 							ioropen(filename);
 							textview.buffer.text = "";
@@ -282,7 +284,9 @@ public class IORCalc : Gtk.Application {
 				if (result== Gtk.ResponseType.ACCEPT) {
 					var fn = fc.get_file().get_path ();
 					var dn = fc.get_current_folder().get_path();
-					kf.kf.set_string("iorcalc", "out-dir", dn);
+					if (dn != null) {
+						kf.kf.set_string("iorcalc", "out-dir", dn);
+					}
 					filename = fn;
 					IORIO.save_file(filename, udata);
 				}

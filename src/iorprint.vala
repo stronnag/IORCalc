@@ -77,7 +77,7 @@ class IORPrint : Object {
 
 		string prfont;
 		try {
-				prfont = kf.get_string ("iorcalc", "pr-font");
+			prfont = kf.get_string ("iorcalc", "pr-font");
 		} catch (Error e) {
 			prfont = "Monospace 10";
 			print("kff: %s\n", e.message);
