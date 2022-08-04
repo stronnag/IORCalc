@@ -43,4 +43,28 @@
       </section>
 	<!-- /submenu -->
   </menu>
+  <menu id="cert-menu">
+    <section>
+      <item>
+        <attribute name="label">Save certificate</attribute>
+        <attribute name="action">cert.save</attribute>
+	<attribute name="accel">&lt;Primary&gt;s</attribute>
+      </item>
+      <item>
+        <attribute name="label">Print certificate</attribute>
+        <attribute name="action">cert.print</attribute>
+	<attribute name="accel">&lt;Primary&gt;p</attribute>
+      </item>
+      <item>
+        <attribute name="label">Set printer font</attribute>
+        <attribute name="action">cert.font</attribute>
+	<attribute name="accel">&lt;Primary&gt;f</attribute>
+      </item>
+      <item>
+        <attribute name="label">Close</attribute>
+        <attribute name="action">cert.quit</attribute>
+		<attribute name="accel">&lt;Primary&gt;q</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

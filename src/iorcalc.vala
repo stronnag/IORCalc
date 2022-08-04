@@ -12,13 +12,10 @@ namespace IChooser {
 			Gtk.ResponseType.ACCEPT);
 
 		fc.set_modal(true);
-        if (action == Gtk.FileChooserAction.SAVE && _fn != null) {
-            try {
-				var fn = Path.get_basename(_fn);
-				var dn = Path.get_dirname(_fn);
-				var fl = File.new_for_path (dn);
+		if (_fn != null) {
+			try {
+				var fl = File.new_for_path (_fn);
 				fc.set_current_folder(fl);
-				fc.set_current_name(fn);
 			} catch (Error e) {
 				stderr.printf(" Chooser %s\n", e.message);
 			}
@@ -39,88 +36,6 @@ namespace IChooser {
 		fc.add_filter (filter);
 		fc.show();
 		return fc;
-	}
-}
-
-public class CertWindow : Gtk.Window {
-	private Gtk.TextView certview;
-	public  CertWindow(void *u, void *c) {
-		set_title("IOR Certifiate");
-		set_modal(true);
-		set_default_size (1200, 800);
-
-		var vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
-		certview = new Gtk.TextView();
-		certview.monospace = true;
-		certview.editable = false;
-		certview.valign = Gtk.Align.FILL;
-		certview.vexpand = true;
-
-		var scrolled = new Gtk.ScrolledWindow ();
-		scrolled.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
-		scrolled.set_child (certview);
-
-		vbox.append (scrolled);
-
-		var bbox = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 1);
-		bbox.set_spacing (5);
-
-		var b1 = new Gtk.Button.with_label ("Save to file");
-		var b2 = new Gtk.Button.with_label ("Print");
-		var b3 = new Gtk.Button.with_label ("Close");
-
-		b2.clicked.connect(() => {
-				var fn = Util.mktempname();
-				IORData.pcert(u, c, fn, 2);
-				var iorprt = new IORPrint();
-				if(iorprt.loadfile(fn)) {
-					iorprt.do_print(this);
-				}
-				FileUtils.unlink(fn);
-			});
-
-		b1.clicked.connect(() => {
-				var fc = IChooser.chooser(this, null, Gtk.FileChooserAction.SAVE, "txt");
-				fc.response.connect((result) => {
-						if (result== Gtk.ResponseType.ACCEPT) {
-							var fn = fc.get_file().get_path ();
-							IORData.pcert(u, c, fn, 2);
-						}
-						fc.close();
-					});
-			});
-
-		b3.clicked.connect(() => {
-				destroy();
-			});
-
-		b1.halign = Gtk.Align.CENTER;
-		b2.halign = Gtk.Align.CENTER;
-		b3.halign = Gtk.Align.CENTER;
-
-		b1.hexpand = true;
-		b2.hexpand = true;
-		b3.hexpand = true;
-		bbox.hexpand = true;
-
-		bbox.append (b1);
-		bbox.append (b2);
-		bbox.append (b3);
-		vbox.append (bbox);
-		set_child(vbox);
-		show();
-	}
-
-	public void load_file(string fn) {
-		if (fn != null) {
-			try {
-				string buf;
-				if(FileUtils.get_contents(fn, out buf)) {
-					certview.buffer.text = buf;
-				}
-			} catch {}
-			FileUtils.unlink(fn);
-		}
 	}
 }
 
@@ -149,6 +64,7 @@ public class IORCalc : Gtk.Application {
 	private Gtk.TextView textview;
 	private Gtk.Button show_cert;
 	private IEntry[] elist = {};
+	private IORSet kf;
 
 	public IEntry? find_ientry(int i) {
 		foreach(var e in elist) {
@@ -170,7 +86,6 @@ public class IORCalc : Gtk.Application {
 		add_main_option_entries(options);
 		handle_local_options.connect(do_handle_local_options);
 		activate.connect(handle_activate);
-
 	}
 
     private int do_handle_local_options(VariantDict o) {
@@ -190,7 +105,16 @@ public class IORCalc : Gtk.Application {
 		return 0;
 	}
 
+	public void save_settings() {
+		if(kf != null) {
+			kf.save_settings();
+		}
+	}
+
     private void handle_activate () {
+		kf = new IORSet();
+		kf.setup_keyfile();
+
 		udata = null;
 		cdata = IORData.allocate_calc_rec();
 		window = new Gtk.ApplicationWindow(this);
@@ -216,10 +140,17 @@ public class IORCalc : Gtk.Application {
         var aq = new GLib.SimpleAction("open",null);
         aq.activate.connect(() => {
 				show_cert.sensitive = false;
-				var fc = IChooser.chooser(window, filename, Gtk.FileChooserAction.OPEN);
+				string? dir = null;
+				try {
+					dir = kf.kf.get_string("iorcalc", "in-dir");
+				} catch {};
+
+				var fc = IChooser.chooser(window, dir, Gtk.FileChooserAction.OPEN);
 				fc.response.connect((result) => {
 						if (result== Gtk.ResponseType.ACCEPT) {
 							var fn = fc.get_file().get_path ();
+							var dn = fc.get_current_folder().get_path();
+							kf.kf.set_string("iorcalc", "in-dir", dn);
 							filename = fn;
 							ioropen(filename);
 							textview.buffer.text = "";
@@ -323,7 +254,7 @@ public class IORCalc : Gtk.Application {
 		show_cert.clicked.connect(() => {
 				var fn = Util.mktempname();
 				IORData.pcert(udata, cdata, fn, 1);
-				new CertWindow(udata, cdata).load_file(fn);
+				new CertWindow(kf, udata, cdata).load_file(fn);
 			});
 
 		bbox.hexpand = true;
@@ -342,10 +273,16 @@ public class IORCalc : Gtk.Application {
     }
 
 	private void save_new_file() {
-		var fc = IChooser.chooser(window, filename, Gtk.FileChooserAction.SAVE);
+		string? dir = null;
+		try {
+			dir = kf.kf.get_string("iorcalc", "out-dir");
+		} catch {};
+		var fc = IChooser.chooser(window, dir, Gtk.FileChooserAction.SAVE);
 		fc.response.connect((result) => {
 				if (result== Gtk.ResponseType.ACCEPT) {
 					var fn = fc.get_file().get_path ();
+					var dn = fc.get_current_folder().get_path();
+					kf.kf.set_string("iorcalc", "out-dir", dn);
 					filename = fn;
 					IORIO.save_file(filename, udata);
 				}
@@ -472,6 +409,7 @@ public class IORCalc : Gtk.Application {
 	public static int main (string[] args) {
         var ior = new IORCalc ();
         ior.run (args);
+		ior.save_settings();
         return 0;
     }
 }
