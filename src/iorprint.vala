@@ -193,8 +193,9 @@ class IORPrint : Object {
 		fc.set_preview_text("IOR LIKE IT'S 1988 AGAIN - PRINTER FONT");
 		fc.set_filter_func((f1,f2) => {
 				if(f1.is_monospace()) {
-					if (f2.get_face_name() == "Regular" ||
-						f2.get_face_name() == "Normal") {
+					var desc = f2.describe();
+					if (desc.get_style() == Pango.Style.NORMAL &&
+						desc.get_weight() == Pango.Weight.NORMAL) {
 						return true;
 					}
 				}
