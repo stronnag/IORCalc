@@ -149,7 +149,7 @@ public class IORCalc : Gtk.Application {
 				fc.response.connect((result) => {
 						if (result== Gtk.ResponseType.ACCEPT) {
 							var fn = fc.get_file().get_path ();
-							var dn = fc.get_current_folder().get_path();
+							var dn = Path.get_dirname(fn);
 							if (dn != null) {
 								kf.kf.set_string("iorcalc", "in-dir", dn);
 							}
