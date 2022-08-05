@@ -209,7 +209,13 @@ public class IORCalc : Gtk.Application {
 				a.website = "https://github.com/stronnag/IORCalc";
 				a.documenters = {"Jonathan Hudson"};
 				a.comments = "Calculate IOR Ratings like it's 1988";
+				a.website_label = "IORCalc on Github";
 				a.show();
+				a.response.connect ((response_id) => {
+						if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT) {
+							a.destroy ();
+						}
+					});
 			});
         window.add_action(aq);
 
@@ -416,6 +422,7 @@ public class IORCalc : Gtk.Application {
 		Environment.set_prgname("org.stronnag.iorcalc"); // for gtk4 compat
         var ior = new IORCalc ();
         ior.run (args);
+		ior.save_settings();
         return 0;
     }
 }
