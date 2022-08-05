@@ -38,10 +38,6 @@ public class CertWindow : Gtk.Window {
 		headerbar.pack_end(fsmenu_button);
 		headerbar.decoration_layout = "icon:menu,maximize,close";
 
-		var evtc = new EventControllerKey ();
-		evtc.set_propagation_phase(PropagationPhase.CAPTURE);
-		((Gtk.Widget)this).add_controller(evtc);
-
 		var saq = new GLib.SimpleAction("save",null);
         saq.activate.connect(() => {
 				var fc = IChooser.chooser(this, null, Gtk.FileChooserAction.SAVE, "txt");
@@ -85,27 +81,28 @@ public class CertWindow : Gtk.Window {
 				}
 			});
 
-		evtc.key_pressed.connect((kv, kc, mfy) => {
-				if((mfy & Gdk.ModifierType.CONTROL_MASK) != 0) {
-					switch(kv) {
-					case 'p':
-						paq.activate(null);
-						break;
-					case 'q':
-					    qaq.activate(null);
-						break;
-					case 'f':
-					    faq.activate(null);
-						break;
-					case 's':
-						saq.activate(null);
-						break;
-					default:
-					    break;
-					}
-				}
-				return false;
-			});
+		var ctrl = new Gtk.ShortcutController();
+		var sc = new Gtk.Shortcut(
+			ShortcutTrigger.parse_string("<Ctrl>p"),
+			ShortcutAction.parse_string("action(cert.print)"));
+		ctrl.add_shortcut(sc);
+
+		sc = new Gtk.Shortcut(
+			ShortcutTrigger.parse_string("<Ctrl>s"),
+			ShortcutAction.parse_string("action(cert.save)"));
+		ctrl.add_shortcut(sc);
+
+		sc = new Gtk.Shortcut(
+			ShortcutTrigger.parse_string("<Ctrl>f"),
+			ShortcutAction.parse_string("action(cert.font)"));
+		ctrl.add_shortcut(sc);
+
+		sc = new Gtk.Shortcut(
+			ShortcutTrigger.parse_string("<Ctrl>q"),
+			ShortcutAction.parse_string("action(cert.quit)"));
+		ctrl.add_shortcut(sc);
+
+		vbox.add_controller(ctrl);
 		set_child(vbox);
 		show();
 	}
