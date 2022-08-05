@@ -1,4 +1,4 @@
-project('iorcalc', 'vala', 'c', version : '0.8.0')
+project('iorcalc', 'vala', 'c', version : '0.8.1')
 
 conf_data = configuration_data()
 conf_data.set('version', meson.project_version())
