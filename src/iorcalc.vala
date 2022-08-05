@@ -210,6 +210,7 @@ public class IORCalc : Gtk.Application {
 				a.website = "https://github.com/stronnag/IORCalc";
 				a.documenters = {"Jonathan Hudson"};
 				a.comments = "Calculate IOR Ratings like it's 1988";
+				a.website_label = "IORCalc on Github";
 				a.show();
 			});
         window.add_action(aq);
