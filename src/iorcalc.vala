@@ -151,7 +151,7 @@ public class IORCalc : Gtk.Application {
 				var id = fc.run();
 				if (id == Gtk.ResponseType.ACCEPT) {
 					var fn = fc.get_file().get_path ();
-					var dn = fc.get_current_folder();
+					var dn = Path.get_dirname(fn);
 					kf.kf.set_string("iorcalc", "in-dir", dn);
 					filename = fn;
 					ioropen(filename);
