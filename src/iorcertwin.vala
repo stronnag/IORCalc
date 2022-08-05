@@ -115,17 +115,20 @@ public class CertWindow : Gtk.Window {
 			try {
 				string buf;
 				if(FileUtils.get_contents(fn, out buf)) {
-					certview.buffer.text = buf;
 					string prfont = iorprt.get_print_font();
+					var tbuf = certview.buffer;
+					tbuf.text = buf;
 					set_cert_text_font(prfont);
 				}
-			} catch {}
+			} catch (Error e) {
+				stderr.printf("load: %s\n", e.message);
+			}
 			FileUtils.unlink(fn);
 		}
 	}
 
 	private void set_cert_text_font(string fontname) {
-		var css = "textview {font-family: %s;}".printf(fontname);
+		var css = "textview {font-family: \"%s\",monospace;}".printf(fontname);
 		var provider = new CssProvider();
 		provider.load_from_data(css.data);
 		var stylec = certview.get_style_context();

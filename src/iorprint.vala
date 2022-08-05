@@ -15,9 +15,7 @@ class IORPrint : Object {
 		lines = {};
 		lbreak = {0,0};
 		kf = _kf;
-		if (settings == null) {
-			find_print_settings();
-		}
+		find_print_settings();
 	}
 
 	public bool loadfile(string fn) {
@@ -74,18 +72,17 @@ class IORPrint : Object {
 		} catch (Error e) {
 			page_setup = new PageSetup();
 		}
-		string prfont = get_print_font();
-		fdesc = Pango.FontDescription.from_string (prfont);
-	}
-
-	public string? get_print_font() {
 		string prfont;
 		try {
 			prfont = kf.get_string ("iorcalc", "pr-font");
 		} catch (Error e) {
 			prfont = "Monospace 10";
 		}
-		return prfont;
+		fdesc = Pango.FontDescription.from_string (prfont);
+	}
+
+	public string? get_print_font() {
+		return fdesc.get_family();
 	}
 
 	public void do_print(Gtk.Window? w) {
