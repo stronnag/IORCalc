@@ -182,6 +182,7 @@ class IORPrint : Object {
 		var window = new Gtk.Window();
 		window.set_modal(true);
 		window.set_transient_for(w);
+		window.set_position (WindowPosition.MOUSE);
 		window.title = "Printer Font Selection";
 		var fc = new Gtk.FontButton();
 		fc.set_font_desc(fdesc);
