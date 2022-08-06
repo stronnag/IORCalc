@@ -40,9 +40,6 @@ public class CertWindow : Gtk.Window {
 
 		this.set_titlebar(headerbar);
 
-		var evtc = new EventControllerKey (this);
-		evtc.set_propagation_phase(PropagationPhase.CAPTURE);
-
 		var saq = new GLib.SimpleAction("save",null);
         saq.activate.connect(() => {
 				var fc = IChooser.chooser(this, null, Gtk.FileChooserAction.SAVE, "txt");
@@ -86,27 +83,24 @@ public class CertWindow : Gtk.Window {
 				}
 			});
 
-		evtc.key_pressed.connect((kv, kc, mfy) => {
-				if((mfy & Gdk.ModifierType.CONTROL_MASK) != 0) {
-					switch(kv) {
-					case 'p':
-						paq.activate(null);
-						break;
-					case 'q':
-					    qaq.activate(null);
-						break;
-					case 'f':
-					    faq.activate(null);
-						break;
-					case 's':
-						saq.activate(null);
-						break;
-					default:
-					    break;
-					}
-				}
-				return false;
-			});
+		var ag = new Gtk.AccelGroup();
+        ag.connect('p', Gdk.ModifierType.CONTROL_MASK, 0, (a,o,k,m) => {
+				paq.activate(null);
+                return true;
+            });
+        ag.connect('q', Gdk.ModifierType.CONTROL_MASK, 0, (a,o,k,m) => {
+				qaq.activate(null);
+                return true;
+            });
+        ag.connect('f', Gdk.ModifierType.CONTROL_MASK, 0, (a,o,k,m) => {
+				faq.activate(null);
+                return true;
+            });
+        ag.connect('s', Gdk.ModifierType.CONTROL_MASK, 0, (a,o,k,m) => {
+				saq.activate(null);
+                return true;
+            });
+        add_accel_group(ag);
 
 		add(vbox);
 		show_all();
