@@ -98,14 +98,14 @@ class IORPrint : Object {
 		printop.begin_print.connect((ctxt) => {
 				double height = ctxt.get_height() * Pango.SCALE;
 				double width = ctxt.get_width() * Pango.SCALE;
-				var fsize = fdesc.get_size ();
-
 				if(width > height) {
+					var lfdesc = fdesc;
+					var fsize = fdesc.get_size ();
 					string s = generate_string(true);
 					for(var i =0 ; i < 10; i++) {
 						layout = ctxt.create_pango_layout();
-						fdesc.set_size (fsize);
-						layout.set_font_description (fdesc);
+						lfdesc.set_size (fsize);
+						layout.set_font_description (lfdesc);
 						layout.set_text(s,-1);
 						Pango.Rectangle r1;
 						Pango.Rectangle r2;
@@ -130,7 +130,6 @@ class IORPrint : Object {
 				} else {
 					string s = generate_string(false);
 					layout = ctxt.create_pango_layout();
-					fdesc.set_size (fsize);
 					layout.set_font_description (fdesc);
 					layout.set_text(s,-1);
 					printop.set_n_pages(2);
