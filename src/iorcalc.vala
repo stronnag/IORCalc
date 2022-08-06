@@ -205,12 +205,12 @@ public class IORCalc : Gtk.Application {
 				a.authors = {"Jonathan Hudson <jh+ior@daria.co.uk>"};
 				a.copyright = "(c) Jonathan Hudson 1984-2022";
 				a.license_type = License.GPL_3_0;
-				a.logo_icon_name = "iorcalc";
 				a.program_name = "IORCalc";
 				a.website = "https://github.com/stronnag/IORCalc";
 				a.documenters = {"Jonathan Hudson"};
 				a.comments = "Calculate IOR Ratings like it's 1988";
 				a.website_label = "IORCalc on Github";
+				a.logo = Gdk.Texture.from_resource("/org/stronnag/iorcalc/iorcalc.svg");
 				a.show();
 			});
         window.add_action(aq);
@@ -230,8 +230,8 @@ public class IORCalc : Gtk.Application {
 
 		udata = IORIO.read_file(filename);
 		populate_grid();
-
 		window.set_icon_name("iorcalc");
+
 		var is_ok = IORData.is_data_valid(udata);
 		set_menu_states(is_ok);
 

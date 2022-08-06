@@ -43,6 +43,26 @@ executable(
   gui_app: true,
 )
 
+executable(
+  'iorcalc-console',
+  wresources,
+  iorsrcs,
+  dependencies: [
+    dependency('gtk4'),
+    dependency('gio-2.0'),
+    dependency('json-glib-1.0'),
+    dependency('pangocairo'),
+    deps,
+    meson.get_compiler('vala').find_library('posix'),
+    meson.get_compiler('c').find_library('m'),
+  ],
+  include_directories : configuration_inc,
+  c_args: '-D_GNU_SOURCE',
+  install: false,
+  gui_app: false,
+)
+
+
 subdir('samples')
 subdir('data')
 
