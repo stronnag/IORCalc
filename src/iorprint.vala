@@ -169,10 +169,8 @@ class IORPrint : Object {
 			if (res == PrintOperationResult.APPLY) {
 				settings = printop.print_settings ;
 				settings.to_key_file (kf, "iorprint");
-				var ps = printop.get_default_page_setup();
-				if (ps != null) {
-					ps.to_key_file (kf, "iorpage");
-				}
+				page_setup  = printop.get_default_page_setup();
+				page_setup.to_key_file (kf, "iorpage");
 			}
         } catch (Error e) {
             warning ("Error printing: %s", e.message);
