@@ -6,6 +6,12 @@ public class CertWindow : Gtk.Window {
 
 	public  CertWindow(IORSet kf, void *u, void *c) {
 		iorprt = new IORPrint(kf.kf);
+		iorprt.font_changed.connect((s) => {
+				if(certview.buffer.text != null) {
+					set_cert_text_font(s);
+				}
+			});
+
 		set_title("IOR Certifiate");
 		set_modal(true);
 		set_default_size (1200, 800);
@@ -13,7 +19,6 @@ public class CertWindow : Gtk.Window {
 		var headerbar = new Gtk.HeaderBar();
 		this.set_titlebar(headerbar);
 
-		var vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
 		certview = new Gtk.TextView();
 		certview.monospace = true;
 		certview.editable = false;
@@ -23,8 +28,6 @@ public class CertWindow : Gtk.Window {
 		var scrolled = new Gtk.ScrolledWindow ();
 		scrolled.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
 		scrolled.set_child (certview);
-
-		vbox.append (scrolled);
 
         var dg = new GLib.SimpleActionGroup();
 		var sbuilder = new Builder.from_resource("/org/stronnag/iorcalc/iorcalc.ui");
@@ -51,8 +54,8 @@ public class CertWindow : Gtk.Window {
             });
         dg.add_action(saq);
 
-		var paq = new GLib.SimpleAction("print",null);
-        paq.activate.connect(() => {
+		saq = new GLib.SimpleAction("print",null);
+        saq.activate.connect(() => {
 				var fn = Util.mktempname();
 				IORData.pcert(u, c, fn, 2);
 				if(iorprt.loadfile(fn)) {
@@ -60,50 +63,27 @@ public class CertWindow : Gtk.Window {
 				}
 				FileUtils.unlink(fn);
 			});
-        dg.add_action(paq);
+        dg.add_action(saq);
 
-		var faq = new GLib.SimpleAction("font",null);
-        faq.activate.connect(() => 	{
+		saq = new GLib.SimpleAction("font",null);
+        saq.activate.connect(() => 	{
 				iorprt.do_font(this);
 			});
-        dg.add_action(faq);
+        dg.add_action(saq);
 
-		var qaq = new GLib.SimpleAction("quit",null);
-        qaq.activate.connect(() => {
+		saq = new GLib.SimpleAction("quit",null);
+        saq.activate.connect(() => {
 				destroy();
             });
-        dg.add_action(qaq);
+        dg.add_action(saq);
+
 		this.insert_action_group("cert", dg);
+		add_binding_action('p', Gdk.ModifierType.CONTROL_MASK, "cert.print", null);
+		add_binding_action('s', Gdk.ModifierType.CONTROL_MASK, "cert.save", null);
+		add_binding_action('f', Gdk.ModifierType.CONTROL_MASK, "cert.font", null);
+		add_binding_action('q', Gdk.ModifierType.CONTROL_MASK, "cert.quit", null);
 
-		iorprt.font_changed.connect((s) => {
-				if(certview.buffer.text != null) {
-					set_cert_text_font(s);
-				}
-			});
-
-		var ctrl = new Gtk.ShortcutController();
-		var sc = new Gtk.Shortcut(
-			ShortcutTrigger.parse_string("<Ctrl>p"),
-			ShortcutAction.parse_string("action(cert.print)"));
-		ctrl.add_shortcut(sc);
-
-		sc = new Gtk.Shortcut(
-			ShortcutTrigger.parse_string("<Ctrl>s"),
-			ShortcutAction.parse_string("action(cert.save)"));
-		ctrl.add_shortcut(sc);
-
-		sc = new Gtk.Shortcut(
-			ShortcutTrigger.parse_string("<Ctrl>f"),
-			ShortcutAction.parse_string("action(cert.font)"));
-		ctrl.add_shortcut(sc);
-
-		sc = new Gtk.Shortcut(
-			ShortcutTrigger.parse_string("<Ctrl>q"),
-			ShortcutAction.parse_string("action(cert.quit)"));
-		ctrl.add_shortcut(sc);
-
-		vbox.add_controller(ctrl);
-		set_child(vbox);
+		set_child(scrolled);
 		show();
 	}
 
