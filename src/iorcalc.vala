@@ -55,78 +55,27 @@ public class IEntry : Gtk.Entry {
 	}
 }
 
-public class IORCalc : Gtk.Application {
-	Gtk.ApplicationWindow window;
+public class IORWindow : Gtk.ApplicationWindow {
 	private Gtk.Notebook nb;
 	private void * udata;
 	private void * cdata;
-	private string? filename;
 	private Gtk.TextView textview;
 	private Gtk.Button show_cert;
 	private IEntry[] elist = {};
+	private string? filename;
 	private IORSet kf;
 
-	public IEntry? find_ientry(int i) {
-		foreach(var e in elist) {
-			if (e.idx == i) {
-				return e;
-			}
-		}
-		return null;
-	}
-
-	public IORCalc () {
-		Object(application_id: "org.stronnag.iorcalc",
-			   flags: ApplicationFlags.HANDLES_COMMAND_LINE);
-
-		const OptionEntry[] options = {
-			{ "version", 'v', 0, OptionArg.NONE, null, "show version", null},
-			{null}
-		};
-		add_main_option_entries(options);
-		handle_local_options.connect(do_handle_local_options);
-		activate.connect(handle_activate);
-	}
-
-    private int do_handle_local_options(VariantDict o) {
-        if (o.contains("version")) {
-            stdout.printf("%s\n", IORCALC_VERSION_STRING);
-            return 0;
-        }
-		return -1;
-    }
-
-	private int _command_line (ApplicationCommandLine command_line) {
-		string[] args = command_line.get_arguments ();
-		if(args.length > 1) {
-			filename = args[1];
-		}
-		activate();
-		return 0;
-	}
-
-	public void save_settings() {
-		if(kf != null) {
-			kf.save_settings();
-		}
-	}
-
-    private void handle_activate () {
-		kf = new IORSet();
-		kf.setup_keyfile();
-
+	public IORWindow() {
 		udata = null;
 		cdata = IORData.allocate_calc_rec();
-		window = new Gtk.ApplicationWindow(this);
-		add_window (window);
-        window.set_default_size (800, 720);
+        set_default_size (800, 720);
 		nb = new Gtk.Notebook();
 
 		var header_bar = new Gtk.HeaderBar ();
 		header_bar.decoration_layout = "icon:menu,minimize,maximize,close";
 		header_bar.set_title_widget (new Gtk.Label("IOR Rating Calculator"));
 		header_bar.set_show_title_buttons(true);
-		window.set_titlebar (header_bar);
+		set_titlebar (header_bar);
 
 		var sbuilder = new Builder.from_resource("/org/stronnag/iorcalc/iorcalc.ui");
         var mm = sbuilder.get_object("menubar") as GLib.MenuModel;
@@ -145,7 +94,7 @@ public class IORCalc : Gtk.Application {
 					dir = kf.kf.get_string("iorcalc", "in-dir");
 				} catch {};
 
-				var fc = IChooser.chooser(window, dir, Gtk.FileChooserAction.OPEN);
+				var fc = IChooser.chooser(this, dir, Gtk.FileChooserAction.OPEN);
 				fc.response.connect((result) => {
 						if (result== Gtk.ResponseType.ACCEPT) {
 							var fn = fc.get_file().get_path ();
@@ -160,7 +109,7 @@ public class IORCalc : Gtk.Application {
 						fc.close();
 					});
 			});
-        window.add_action(aq);
+        add_action(aq);
 
         aq = new GLib.SimpleAction("save",null);
         aq.activate.connect(() => {
@@ -170,13 +119,13 @@ public class IORCalc : Gtk.Application {
 					IORIO.save_file(filename, udata);
 				}
 			});
-        window.add_action(aq);
+        add_action(aq);
 
         aq = new GLib.SimpleAction("saveas",null);
         aq.activate.connect(() => {
 				save_new_file();
 			});
-        window.add_action(aq);
+        add_action(aq);
 
 		aq = new GLib.SimpleAction("calc",null);
         aq.activate.connect(() => {
@@ -196,7 +145,7 @@ public class IORCalc : Gtk.Application {
 				show_cert.sensitive = true;
 				FileUtils.unlink(tfn);
 			});
-        window.add_action(aq);
+        add_action(aq);
 
 		aq = new GLib.SimpleAction("about", null);
         aq.activate.connect(() => {
@@ -213,27 +162,15 @@ public class IORCalc : Gtk.Application {
 				a.logo = Gdk.Texture.from_resource("/org/stronnag/iorcalc/iorcalc.svg");
 				a.show();
 			});
-        window.add_action(aq);
-
-		set_accels_for_action ("win.calc", { "<Primary>c" });
-		set_accels_for_action ("win.save", { "<Primary>s" });
-		set_accels_for_action ("win.open", { "<Primary>o" });
-		set_accels_for_action ("win.about", { "F1" });
-		set_accels_for_action ("win.quit", { "<Primary>q" });
+        add_action(aq);
 
 		aq = new GLib.SimpleAction("quit",null);
         aq.activate.connect(() => {
-                window.destroy();
+                destroy();
             });
 
-        window.add_action(aq);
-
-		udata = IORIO.read_file(filename);
-		populate_grid();
-		window.set_icon_name("iorcalc");
-
-		var is_ok = IORData.is_data_valid(udata);
-		set_menu_states(is_ok);
+        add_action(aq);
+		set_icon_name("iorcalc");
 
 		var vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
 		vbox.append (nb);
@@ -271,16 +208,37 @@ public class IORCalc : Gtk.Application {
 
 		vbox.append (scrolled);
 		vbox.append (bbox);
-		window.set_child (vbox);
-        window.show();
-    }
+		set_child (vbox);
+	}
+
+	public void setup(IORSet _kf, string? _filename) {
+		kf = _kf;
+		filename = _filename;
+	}
+
+	public void run() {
+		udata = IORIO.read_file(filename);
+		populate_grid();
+		var is_ok = IORData.is_data_valid(udata);
+		set_menu_states(is_ok);
+		present();
+	}
+
+	public IEntry? find_ientry(int i) {
+		foreach(var e in elist) {
+			if (e.idx == i) {
+				return e;
+			}
+		}
+		return null;
+	}
 
 	private void save_new_file() {
 		string? dir = null;
 		try {
 			dir = kf.kf.get_string("iorcalc", "out-dir");
 		} catch {};
-		var fc = IChooser.chooser(window, dir, Gtk.FileChooserAction.SAVE);
+		var fc = IChooser.chooser(this, dir, Gtk.FileChooserAction.SAVE);
 		fc.response.connect((result) => {
 				if (result== Gtk.ResponseType.ACCEPT) {
 					var fn = fc.get_file().get_path ();
@@ -321,7 +279,7 @@ public class IORCalc : Gtk.Application {
 	}
 
 	private void set_menu_state(string action, bool state) {
-        var ac = window.lookup_action(action) as SimpleAction;
+        var ac = lookup_action(action) as SimpleAction;
 		if(ac != null)
 			ac.set_enabled(state);
     }
@@ -402,6 +360,64 @@ public class IORCalc : Gtk.Application {
 				grid.attach(lab, col, row, 4, 1);
 			}
 		}
+	}
+}
+
+public class IORCalc : Gtk.Application {
+	private string? filename;
+	private IORSet kf;
+
+	public IORCalc () {
+		Object(application_id: "org.stronnag.iorcalc",
+			   flags: ApplicationFlags.HANDLES_COMMAND_LINE|ApplicationFlags.NON_UNIQUE);
+
+		const OptionEntry[] options = {
+			{ "version", 'v', 0, OptionArg.NONE, null, "show version", null},
+			{null}
+		};
+
+		kf = new IORSet();
+		kf.setup_keyfile();
+
+		add_main_option_entries(options);
+		handle_local_options.connect(do_handle_local_options);
+		activate.connect(handle_activate);
+	}
+
+    private void handle_activate () {
+  		set_accels_for_action ("win.calc", { "<Primary>c" });
+		set_accels_for_action ("win.save", { "<Primary>s" });
+		set_accels_for_action ("win.open", { "<Primary>o" });
+		set_accels_for_action ("win.about", { "F1" });
+		set_accels_for_action ("win.quit", { "<Primary>q" });
+		var window = new IORWindow();
+		add_window (window);
+		window.setup(kf, filename);
+		filename = null;
+		window.run();
+    }
+
+	public void save_settings() {
+		if(kf != null) {
+			kf.save_settings();
+		}
+	}
+
+    private int do_handle_local_options(VariantDict o) {
+        if (o.contains("version")) {
+            stdout.printf("%s\n", IORCALC_VERSION_STRING);
+            return 0;
+        }
+		return -1;
+    }
+
+	private int _command_line (ApplicationCommandLine command_line) {
+		string[] args = command_line.get_arguments ();
+		if(args.length > 1) {
+			filename = args[1];
+		}
+		activate();
+		return 0;
 	}
 
 	public override int command_line (ApplicationCommandLine command_line) {
