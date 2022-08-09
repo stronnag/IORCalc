@@ -61,9 +61,11 @@ public class IORWindow : Gtk.ApplicationWindow {
 	private void * cdata;
 	private Gtk.TextView textview;
 	private Gtk.Button show_cert;
+	private Gtk.Button run_calc;
 	private IEntry[] elist = {};
 	private string? filename;
 	private IORSet kf;
+	private Gtk.MenuButton fsmenu_button;
 
 	public IORWindow() {
 		udata = null;
@@ -80,7 +82,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 		var sbuilder = new Builder.from_resource("/org/stronnag/iorcalc/iorcalc.ui");
         var mm = sbuilder.get_object("menubar") as GLib.MenuModel;
 
-		var fsmenu_button = new Gtk.MenuButton();
+		fsmenu_button = new Gtk.MenuButton();
 		fsmenu_button.icon_name = "open-menu-symbolic";
 		var pop = new Gtk.PopoverMenu.from_model(mm);
         fsmenu_button.set_popover(pop);
@@ -186,7 +188,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 
 		var bbox = new Gtk.Box (Gtk.Orientation.HORIZONTAL,2);
 		bbox.set_spacing (5);
-		var run_calc = new Gtk.Button.with_label("Calculate Rating");
+		run_calc = new Gtk.Button.with_label("Calculate Rating");
 		run_calc.set_action_name("win.calc");
 
 		show_cert = new Gtk.Button.with_label("Show Certificate");
@@ -194,7 +196,13 @@ public class IORWindow : Gtk.ApplicationWindow {
 		show_cert.clicked.connect(() => {
 				var fn = Util.mktempname();
 				IORData.pcert(udata, cdata, fn, 1);
-				new CertWindow(kf, udata, cdata).load_file(fn);
+				var cw = new CertWindow(this, kf, udata, cdata);
+				toggle_cert_actions(false);
+				cw.close_request.connect(() => {
+						toggle_cert_actions(true);
+						return false;
+					});
+				cw.load_file(fn);
 			});
 
 		bbox.hexpand = true;
@@ -209,6 +217,13 @@ public class IORWindow : Gtk.ApplicationWindow {
 		vbox.append (scrolled);
 		vbox.append (bbox);
 		set_child (vbox);
+	}
+
+	private void toggle_cert_actions(bool act) {
+		fsmenu_button.sensitive = act;
+		nb.sensitive = act;
+		run_calc.sensitive = act;
+		show_cert.sensitive = act;
 	}
 
 	public void setup(IORSet _kf, string? _filename) {
@@ -369,7 +384,7 @@ public class IORCalc : Gtk.Application {
 
 	public IORCalc () {
 		Object(application_id: "org.stronnag.iorcalc",
-			   flags: ApplicationFlags.HANDLES_COMMAND_LINE|ApplicationFlags.NON_UNIQUE);
+			   flags: ApplicationFlags.HANDLES_COMMAND_LINE);
 
 		const OptionEntry[] options = {
 			{ "version", 'v', 0, OptionArg.NONE, null, "show version", null},
@@ -382,20 +397,34 @@ public class IORCalc : Gtk.Application {
 		add_main_option_entries(options);
 		handle_local_options.connect(do_handle_local_options);
 		activate.connect(handle_activate);
+		set_actions();
 	}
 
-    private void handle_activate () {
+	private void set_actions() {
   		set_accels_for_action ("win.calc", { "<Primary>c" });
 		set_accels_for_action ("win.save", { "<Primary>s" });
 		set_accels_for_action ("win.open", { "<Primary>o" });
 		set_accels_for_action ("win.about", { "F1" });
 		set_accels_for_action ("win.quit", { "<Primary>q" });
+		var sac = new SimpleAction ("new-window", null);
+		sac.activate.connect (() => {
+				create_ior_window();
+			});
+		add_action(sac);
+		set_accels_for_action ("app.new-window", { "<Primary>n" });
+	}
+
+    private void handle_activate () {
+		create_ior_window();
+    }
+
+	private void create_ior_window() {
 		var window = new IORWindow();
 		add_window (window);
 		window.setup(kf, filename);
 		filename = null;
 		window.run();
-    }
+	}
 
 	public void save_settings() {
 		if(kf != null) {

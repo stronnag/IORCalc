@@ -4,3 +4,4 @@ Type=Application
 Name=IOR Rating Calculator
 Exec=iorcalc
 Icon=iorcalc
+Actions=new-window;

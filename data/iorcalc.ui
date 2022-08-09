@@ -1,47 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <menu id="menubar">
-    <!-- submenu>
-      <attribute name="label">_File</attribute -->
-      <section>
-	<item>
-          <attribute name="label">Open data file</attribute>
-          <attribute name="action">win.open</attribute>
-	  <attribute name="accel">&lt;Primary&gt;o</attribute>
-	</item>
-	<item>
-          <attribute name="label">Save data file</attribute>
-          <attribute name="action">win.save</attribute>
-	  <attribute name="accel">&lt;Primary&gt;s</attribute>
-	</item>
-	<item>
-          <attribute name="label">Save As data file</attribute>
-          <attribute name="action">win.saveas</attribute>
-	  <attribute name="accel">&lt;Primary&gt;a</attribute>
-	</item>
-      </section>
-      <section>
-	<item>
-          <attribute name="label">Calculate Rating</attribute>
-          <attribute name="action">win.calc</attribute>
-	  <attribute name="accel">&lt;Primary&gt;c</attribute>
-	</item>
-      </section>
-      <section>
-	<item>
-          <attribute name="label">About</attribute>
-          <attribute name="action">win.about</attribute>
+    <section>
+      <item>
+        <attribute name="label">New Window</attribute>
+        <attribute name="action">app.new-window</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Open data file</attribute>
+        <attribute name="action">win.open</attribute>
+	<attribute name="accel">&lt;Primary&gt;o</attribute>
+      </item>
+      <item>
+        <attribute name="label">Save data file</attribute>
+        <attribute name="action">win.save</attribute>
+	<attribute name="accel">&lt;Primary&gt;s</attribute>
+      </item>
+      <item>
+        <attribute name="label">Save As data file</attribute>
+        <attribute name="action">win.saveas</attribute>
+	<attribute name="accel">&lt;Primary&gt;a</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Calculate Rating</attribute>
+        <attribute name="action">win.calc</attribute>
+	<attribute name="accel">&lt;Primary&gt;c</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">About</attribute>
+        <attribute name="action">win.about</attribute>
 	  <attribute name="accel">F1</attribute>
-	</item>
-      </section>
-      <section>
-	<item>
-          <attribute name="label">Quit</attribute>
-          <attribute name="action">win.quit</attribute>
-	  <attribute name="accel">&lt;Primary&gt;q</attribute>
-	</item>
-      </section>
-	<!-- /submenu -->
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label">Quit</attribute>
+        <attribute name="action">win.quit</attribute>
+	<attribute name="accel">&lt;Primary&gt;q</attribute>
+      </item>
+    </section>
   </menu>
   <menu id="cert-menu">
     <section>
@@ -63,7 +66,7 @@
       <item>
         <attribute name="label">Close</attribute>
         <attribute name="action">cert.quit</attribute>
-		<attribute name="accel">&lt;Primary&gt;q</attribute>
+	<attribute name="accel">&lt;Primary&gt;q</attribute>
       </item>
     </section>
   </menu>

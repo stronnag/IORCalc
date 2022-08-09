@@ -4,7 +4,7 @@ public class CertWindow : Gtk.Window {
 	private Gtk.TextView certview;
 	private IORPrint iorprt;
 
-	public  CertWindow(IORSet kf, void *u, void *c) {
+	public  CertWindow(Gtk.Window _w, IORSet kf, void *u, void *c) {
 		iorprt = new IORPrint(kf.kf);
 		iorprt.font_changed.connect((s) => {
 				if(certview.buffer.text != null) {
@@ -13,7 +13,7 @@ public class CertWindow : Gtk.Window {
 			});
 
 		set_title("IOR Certifiate");
-		set_modal(true);
+		set_transient_for(_w);
 		set_default_size (1200, 800);
 
 		var headerbar = new Gtk.HeaderBar();
@@ -73,7 +73,7 @@ public class CertWindow : Gtk.Window {
 
 		saq = new GLib.SimpleAction("quit",null);
         saq.activate.connect(() => {
-				destroy();
+				close();
             });
         dg.add_action(saq);
 
