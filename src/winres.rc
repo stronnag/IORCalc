@@ -1,8 +1,8 @@
 2 ICON "../data/iorcalc.ico"
 
 1 VERSIONINFO
-FILEVERSION 1,0,0,0
-FILEVERSION 1,0,0,0
+FILEVERSION 1,1,0,0
+FILEVERSION 1,1,0,0
 FILEOS 0x40004
 FILETYPE 1
 {
@@ -12,12 +12,12 @@ FILETYPE 1
     {
       VALUE "CompanyName", "Stronnag MegaCorp"
       VALUE "FileDescription", "IOR Rating Calculator"
-      VALUE "FileVersion", "1.0.0"
+      VALUE "FileVersion", "1.1.0"
       VALUE "InternalName", "iorcalc"
       VALUE "LegalCopyright", "Copyright (c) 2022 Jonathan Hudson"
       VALUE "OriginalFilename", "iorcalc.exe"
       VALUE "ProductName", "iorcalc"
-      VALUE "ProductVersion", "1.0.0"
+      VALUE "ProductVersion", "1.1.0"
       VALUE "Comment", "GPL3"
     }
   }
