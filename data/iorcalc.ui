@@ -67,4 +67,12 @@
       </item>
     </section>
   </menu>
+  <menu id="app-menu">
+    <section>
+      <item>
+        <attribute name="label">New Window</attribute>
+        <attribute name="action">app.new-window</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

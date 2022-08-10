@@ -107,6 +107,14 @@ public class IORCalc : Gtk.Application {
 	}
 
     private void handle_activate () {
+		var aaq = new SimpleAction ("new-window", null);
+		aaq.activate.connect (() => {
+			});
+		add_action(aaq);
+		set_accels_for_action ("app.new-window", { "<Ctrl>n" });
+
+		if (active_window != null)
+			return;
 		kf = new IORSet();
 		kf.setup_keyfile();
 
