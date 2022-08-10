@@ -71,7 +71,7 @@ public class CertWindow : Gtk.Window {
 			});
         dg.add_action(saq);
 
-		saq = new GLib.SimpleAction("quit",null);
+		saq = new GLib.SimpleAction("close",null);
         saq.activate.connect(() => {
 				close();
             });
@@ -81,7 +81,7 @@ public class CertWindow : Gtk.Window {
 		add_binding_action('p', Gdk.ModifierType.CONTROL_MASK, "cert.print", null);
 		add_binding_action('s', Gdk.ModifierType.CONTROL_MASK, "cert.save", null);
 		add_binding_action('f', Gdk.ModifierType.CONTROL_MASK, "cert.font", null);
-		add_binding_action('q', Gdk.ModifierType.CONTROL_MASK, "cert.quit", null);
+		add_binding_action('q', Gdk.ModifierType.CONTROL_MASK, "cert.close", null);
 
 		set_child(scrolled);
 		show();

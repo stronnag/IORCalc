@@ -166,9 +166,9 @@ public class IORWindow : Gtk.ApplicationWindow {
 			});
         add_action(aq);
 
-		aq = new GLib.SimpleAction("quit",null);
+		aq = new GLib.SimpleAction("close",null);
         aq.activate.connect(() => {
-                destroy();
+                close();
             });
 
         add_action(aq);
@@ -401,17 +401,24 @@ public class IORCalc : Gtk.Application {
 	}
 
 	private void set_actions() {
-  		set_accels_for_action ("win.calc", { "<Primary>c" });
-		set_accels_for_action ("win.save", { "<Primary>s" });
-		set_accels_for_action ("win.open", { "<Primary>o" });
+  		set_accels_for_action ("win.calc", { "<Ctrl>r" });
+		set_accels_for_action ("win.save", { "<Ctrl>s" });
+		set_accels_for_action ("win.open", { "<Ctrl>o" });
 		set_accels_for_action ("win.about", { "F1" });
-		set_accels_for_action ("win.quit", { "<Primary>q" });
+		set_accels_for_action ("win.close", { "<Ctrl>c" });
 		var sac = new SimpleAction ("new-window", null);
 		sac.activate.connect (() => {
 				create_ior_window();
 			});
 		add_action(sac);
-		set_accels_for_action ("app.new-window", { "<Primary>n" });
+		set_accels_for_action ("app.new-window", { "<Ctrl>n" });
+
+		sac = new SimpleAction ("quit", null);
+		sac.activate.connect (() => {
+				quit();
+			});
+		add_action(sac);
+		set_accels_for_action ("app.quit", { "<Ctrl>q" });
 	}
 
     private void handle_activate () {

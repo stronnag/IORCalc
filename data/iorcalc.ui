@@ -11,24 +11,24 @@
       <item>
         <attribute name="label">Open data file</attribute>
         <attribute name="action">win.open</attribute>
-	<attribute name="accel">&lt;Primary&gt;o</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;o</attribute>
       </item>
       <item>
         <attribute name="label">Save data file</attribute>
         <attribute name="action">win.save</attribute>
-	<attribute name="accel">&lt;Primary&gt;s</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;s</attribute>
       </item>
       <item>
         <attribute name="label">Save As data file</attribute>
         <attribute name="action">win.saveas</attribute>
-	<attribute name="accel">&lt;Primary&gt;a</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;a</attribute>
       </item>
     </section>
     <section>
       <item>
         <attribute name="label">Calculate Rating</attribute>
         <attribute name="action">win.calc</attribute>
-	<attribute name="accel">&lt;Primary&gt;c</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;r</attribute>
       </item>
     </section>
     <section>
@@ -40,9 +40,15 @@
     </section>
     <section>
       <item>
+        <attribute name="label">Close</attribute>
+        <attribute name="action">win.close</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;c</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label">Quit</attribute>
-        <attribute name="action">win.quit</attribute>
-	<attribute name="accel">&lt;Primary&gt;q</attribute>
+        <attribute name="action">app.quit</attribute>
       </item>
     </section>
   </menu>
@@ -51,22 +57,22 @@
       <item>
         <attribute name="label">Save certificate</attribute>
         <attribute name="action">cert.save</attribute>
-	<attribute name="accel">&lt;Primary&gt;s</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;s</attribute>
       </item>
       <item>
         <attribute name="label">Print certificate</attribute>
         <attribute name="action">cert.print</attribute>
-	<attribute name="accel">&lt;Primary&gt;p</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;p</attribute>
       </item>
       <item>
         <attribute name="label">Set printer font</attribute>
         <attribute name="action">cert.font</attribute>
-	<attribute name="accel">&lt;Primary&gt;f</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;f</attribute>
       </item>
       <item>
         <attribute name="label">Close</attribute>
-        <attribute name="action">cert.quit</attribute>
-	<attribute name="accel">&lt;Primary&gt;q</attribute>
+        <attribute name="action">cert.close</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;c</attribute>
       </item>
     </section>
   </menu>

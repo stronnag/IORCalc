@@ -34,6 +34,8 @@ The menu (load files etc.) is invoked from the highlighted "hamburger" icon
 
 ![menu](assets/iorcalc2.png)
 
+It is possible to open multiple windows (**New Window**) with independant data and certificate views."Close" closes the window (and quits if it was the only window), "Quit" exits the application.
+
 The **Calculate Rating** option is only enabled when a representative set of data has been input or loaded.
 
 Data may be saved **Save data file**, **Save As data file** at any time.

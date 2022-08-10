@@ -2,6 +2,12 @@
 Terminal=false
 Type=Application
 Name=IOR Rating Calculator
-Exec=iorcalc
+Exec=iorcalc %F
 Icon=iorcalc
-Actions=new-window;
+Actions=new-window
+MimeType=application/json;
+
+[Desktop Action new-window]
+Exec=iorcalc %F
+Name=New Window
+Icon=iorcalc
