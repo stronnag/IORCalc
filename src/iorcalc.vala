@@ -216,7 +216,49 @@ public class IORWindow : Gtk.ApplicationWindow {
 
 		vbox.append (scrolled);
 		vbox.append (bbox);
+
+		var droptgt = new Gtk.DropTarget(typeof (Gdk.FileList), Gdk.DragAction.COPY);
+		droptgt.on_drop.connect((tgt, value, x, y) => {
+				if(value.type() == typeof (Gdk.FileList)) {
+					var flist = ((Gdk.FileList)value).get_files();
+					foreach(var u in flist) {
+						var fn = u.get_path();
+						if(valid_file(fn)) {
+							var w = new IORWindow();
+							this.application.add_window (w);
+							w.setup(kf, fn);
+							w.run();
+						}
+					}
+				}
+				return true;
+			});
+		textview.add_controller((EventController)droptgt);
 		set_child (vbox);
+	}
+
+	private bool valid_file(string? uri) {
+		bool res = false;
+		string fn;
+		try {
+			if (uri.has_prefix("file://")) {
+				fn = Filename.from_uri(uri);
+			} else {
+				fn = uri;
+			}
+			uint8 buf[1024]={0};
+			var fs = FileStream.open (fn, "r");
+			if (fs != null) {
+				if(fs.read (buf) > 0) {
+					if(((string)buf).contains("\"yacht\" : ")) {
+						res = true;
+					}
+				}
+			}
+		} catch (Error e) {
+			print("validate %s\n", e.message);
+		}
+		return res;
 	}
 
 	private void toggle_cert_actions(bool act) {
@@ -422,14 +464,14 @@ public class IORCalc : Gtk.Application {
 	}
 
     private void handle_activate () {
-		create_ior_window();
+		create_ior_window(filename);
+		filename=null;
     }
 
-	private void create_ior_window() {
+	private void create_ior_window(string? fn=null) {
 		var window = new IORWindow();
 		add_window (window);
-		window.setup(kf, filename);
-		filename = null;
+		window.setup(kf, fn);
 		window.run();
 	}
 
