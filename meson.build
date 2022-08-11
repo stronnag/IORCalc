@@ -45,6 +45,7 @@ executable(
   gui_app: true,
 )
 
+if host_machine.system() == 'windows'
 executable(
   'iorcalc-console',
   wresources,
@@ -60,10 +61,12 @@ executable(
   ],
   include_directories : configuration_inc,
   c_args: '-D_GNU_SOURCE',
+  vala_args : vopts,
+  build_by_default: false,
   install: false,
   gui_app: false,
 )
-
+endif
 
 subdir('samples')
 subdir('data')
