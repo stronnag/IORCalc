@@ -14,6 +14,7 @@ wresources = gnome.compile_resources(
 )
 
 deps = []
+vopts = []
 
 configure_file(
   input : 'src/iorcalc-config.h.in',
@@ -39,6 +40,7 @@ executable(
   ],
   include_directories : configuration_inc,
   c_args: '-D_GNU_SOURCE',
+  vala_args : vopts,
   install: true,
   gui_app: true,
 )
@@ -80,3 +82,5 @@ else
   )
  endif
 endif
+
+# vala_args : dopts,

@@ -14,3 +14,7 @@ if host_machine.system() == 'windows'
   windows = import('windows')
   iorsrcs += windows.compile_resources('winres.rc')
 endif
+
+if host_machine.system() == 'freebsd'
+  vopts += '--define=FBSD'
+endif

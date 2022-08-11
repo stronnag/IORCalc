@@ -162,6 +162,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 		vbox.append (scrolled);
 		vbox.append (bbox);
 
+#if !FBSD
 		var droptgt = new Gtk.DropTarget(typeof (Gdk.FileList), Gdk.DragAction.COPY);
 		droptgt.on_drop.connect((tgt, value, x, y) => {
 				if(value.type() == typeof (Gdk.FileList)) {
@@ -178,6 +179,30 @@ public class IORWindow : Gtk.ApplicationWindow {
 				}
 				return true;
 			});
+#else
+		// Incomplete definition of Gdk.FileList (no get_files()).
+		var droptgt = new Gtk.DropTarget(typeof (string), Gdk.DragAction.COPY);
+		droptgt.on_drop.connect((tgt, value, x, y) => {
+				if(value.type() == typeof (string)) {
+					foreach(var u in ((string)value).split( "\r\n")) {
+						if (u!= null && u.length > 0) {
+							try {
+								var fn = Filename.from_uri(u);
+								if(valid_file(fn)) {
+									var w = new IORWindow();
+									this.application.add_window (w);
+									w.setup(kf, fn);
+									w.run();
+								}
+							} catch (Error e) {
+								stderr.printf("drop: %s %s\n", u, e.message);
+							}
+						}
+					}
+				}
+				return true;
+			});
+#endif
 		textview.add_controller((EventController)droptgt);
 		set_child (vbox);
 	}
