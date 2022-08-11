@@ -13,6 +13,7 @@ iorsrcs = files('iorcalc.vala', 'iorwindow.vala', 'iorprint.vala', 'iorcertwin.v
 if host_machine.system() == 'windows'
   windows = import('windows')
   iorsrcs += windows.compile_resources('winres.rc')
+  vopts += '--define=WINNT'
 endif
 
 if host_machine.system() == 'freebsd'

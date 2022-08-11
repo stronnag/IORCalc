@@ -162,6 +162,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 		vbox.append (scrolled);
 		vbox.append (bbox);
 
+#if !WINNT
 #if !FBSD
 		var droptgt = new Gtk.DropTarget(typeof (Gdk.FileList), Gdk.DragAction.COPY);
 		droptgt.on_drop.connect((tgt, value, x, y) => {
@@ -213,11 +214,12 @@ public class IORWindow : Gtk.ApplicationWindow {
 				set_target(textview, false);
 			});
 		textview.add_controller((EventController)droptgt);
+#endif
 		set_child (vbox);
 	}
 
 
-
+#if !WINNT
 	public void set_target(Gtk.Widget w, bool active) {
 		string css;
 		if (active) {
@@ -253,7 +255,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 		}
 		return res;
 	}
-
+#endif
 	private void toggle_cert_actions(bool act) {
 		fsmenu_button.sensitive = act;
 		nb.sensitive = act;
