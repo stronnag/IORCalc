@@ -165,6 +165,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 #if !FBSD
 		var droptgt = new Gtk.DropTarget(typeof (Gdk.FileList), Gdk.DragAction.COPY);
 		droptgt.on_drop.connect((tgt, value, x, y) => {
+				set_target(textview, false);
 				if(value.type() == typeof (Gdk.FileList)) {
 					var flist = ((Gdk.FileList)value).get_files();
 					foreach(var u in flist) {
@@ -183,6 +184,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 		// Incomplete definition of Gdk.FileList (no get_files()).
 		var droptgt = new Gtk.DropTarget(typeof (string), Gdk.DragAction.COPY);
 		droptgt.on_drop.connect((tgt, value, x, y) => {
+				set_target(textview, false);
 				if(value.type() == typeof (string)) {
 					foreach(var u in ((string)value).split( "\r\n")) {
 						if (u!= null && u.length > 0) {
@@ -203,8 +205,30 @@ public class IORWindow : Gtk.ApplicationWindow {
 				return true;
 			});
 #endif
+		droptgt.accept.connect((d) => {
+				set_target(textview, true);
+				return true;
+			});
+		droptgt.leave.connect((d) => {
+				set_target(textview, false);
+			});
 		textview.add_controller((EventController)droptgt);
 		set_child (vbox);
+	}
+
+
+
+	public void set_target(Gtk.Widget w, bool active) {
+		string css;
+		if (active) {
+			css =  "textview { border-style: dotted; border-color: @borders; border-width: 4px; }";
+		} else {
+			css =  "textview { border-style: none; }";
+		}
+		var provider = new CssProvider();
+		provider.load_from_data(css.data);
+		var stylec = w.get_style_context();
+		stylec.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 	}
 
 	private bool valid_file(string? uri) {
