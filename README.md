@@ -19,7 +19,7 @@ It is largely complete, missing only some esoteric rig options (Gaff rig etc), a
 
 There is a Debian package (`*.deb`) and Windows Installer in the [release area](https://github.com/stronnag/IORCalc/releases).
 
-[Build Instructions](#building) are provided for other platforms; tested on FreeBSD and MacOS.
+[Build Instructions](#building) are provided for other platforms; tested on Arch Linux, FreeBSD and MacOS.
 
 ## Example files
 
