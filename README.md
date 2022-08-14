@@ -15,6 +15,23 @@ It has been recently modernised to contemporary C standards and a GTK3 UI added 
 
 It is largely complete, missing only some esoteric rig options (Gaff rig etc), and believed to be accurate (when last compared to an official certificate in 1986, it was in complete agreement). The later changes 1987-88 are unverified.
 
+## Binary Release Media
+
+There is a Debian package (`*.deb`) and Windows Installer in the [release area](https://github.com/stronnag/IORCalc/releases).
+
+[Build Instructions](#building) are provided for other platforms; tested on FreeBSD and MacOS.
+
+## Example files
+
+Two example input files are provided (`samples` in the repo, installed in `share/doc/iorcalc`).
+
+* manitou4.json : 1969 C&C 39
+* summerwine.json : 1984 Humphreys one tonner
+
+## User Guide
+
+There is a [user guide](docs/)
+
 ## Building
 
 Requirements:
@@ -47,7 +64,7 @@ Requirements:
 
 * Use Homebrew:
     ```
-        # install requirements:
+        # specific package requirements:
         brew install meson vala gtk4 json-glib
         # Once (setup)
         meson build --buildtype=release --strip --prefix=~/.local
@@ -60,23 +77,9 @@ Requirements:
 
 ### Legacy GTK+-3.0 branch
 
-There is also a `gtk3` branch. This is functionally equivalent to the GTK4/`master` branch.
+There is also a `gtk3` branch. This is less functional than the GTK4/`master` branch, and is no longer maintained. It does however compile and function for users of older Linux distributions. There is no need to use it on modern Linux, FreeBSD, MacOS or Windows.
+
 In the above build instructions, replace `gtk4` with the equivalent `gtk3` / `gtk+-3.0` package name.
-
-## Binary Release Media
-
-There is a Debian package (`*.deb`) and Windows Installer in the [release area](https://github.com/stronnag/IORCalc/releases). These are both built from the **gtk3** branch.
-
-## Example files
-
-Two example input files are provided (`samples` in the repo, installed in `share/doc/iorcalc`).
-
-* summerwine.json : 1984 Humphreys one tonner
-* manitou4.json : 1969 C&C 39
-
-## User Guide
-
-There is a [user guide](docs/)
 
 ## Miscellaneous
 

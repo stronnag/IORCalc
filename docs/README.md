@@ -4,13 +4,13 @@ Calculate IOR ratings like it's 1988 again.
 
 ## Introduction
 
-`iorcalc` is an application to input / edit IOR measurement data and generate IOR rating certificates. The application includes all rule amendments to January 1988; after which the author started sailing on non-IOR (CHS) yachts, which was much more fun.
+`iorcalc` is an application to input / edit IOR measurement data and generate IOR rating certificates. The application includes all rule amendments to January 1988; after which the author started sailing on non-IOR (CHS) yachts.
 
 `iorcalc` was last validated against official (RORC Rating Office) certificates in 1986; any 1987-198 rule changes are not validated.
 
-`iorcalc` is a fairly complete coverage of the IOR rule; there are some esoteric rigs that are not covered (schooners probably). However there is some commented out BASIC code in `calc_rig.c` that should cover the omitted cases if required.
+`iorcalc` is a fairly complete coverage of the IOR rule; there are some esoteric rigs that are not covered (gaff, schooners probably). However there is some commented out BASIC code in `calc_rig.c` that should cover the omitted cases if required.
 
-`iorcalc` was written in 1984 to run on a Sinclair QL (QDOS OS). It was largely forgotten until the author stumbled upon an old floppy disk, after which is was updated and a modern UI added.
+`iorcalc` was written in 1984/5 to run on a Sinclair QL (QDOS OS). It was largely forgotten until the author stumbled upon an old floppy disk, after which is was updated and a modern UI added.
 
 ## Usage
 
@@ -22,6 +22,8 @@ Two sample data files are in the repositry `samples` directory. These are also p
 
 Launch from a desktop icon or from the command line. If invoked from the command line, a data file may be given; this probably means drag and drop will work in Windows.
 
+Drag and drop onto the [lower status area](#drag_and_drop) is available on FreeBSD, Linux, MacOS; due to a bug in the Windows GTK library it is not *yet* available on Windows.
+
 ```
 $ iorcalc samples/manitou4.json
 ```
@@ -32,7 +34,7 @@ The main window will be displayed (empty without an input file):
 
 The menu (load files etc.) is invoked from the highlighted "hamburger" icon
 
-![menu](assets/iorcalc2.png)
+![menu](assets/iorcalc2.png)11
 
 It is possible to open multiple windows (**New Window**) with independant data and certificate views."Close" closes the window (and quits if it was the only window), "Quit" exits the application.
 
@@ -95,7 +97,18 @@ There are three options:
 
 * If `portrait` is selected, the selected font and size are used without further analysis. A 10 point font should fit on an A4 / US Letter page. Most operating systems have a `Preview` option to verify that the font will allow output page coverage.
 * If `landscape` is selected, the font is scaled to fit the two pages of the certificate  on the printer page. On A4, this results in a readable c. 7pt font. The font will not be scaled above the user specified size.
-* On MacOS, it is probably necessary to build against GTK4 to get working printing.
+* On MacOS, it appears necessary to build against GTK4 to get working printing.
+
+
+### Drag and Drop
+
+On FreeBSD, Linux and MacOS, it is possible to drag and drop data files onto the lower status area.
+
+![dnd](assets/iorcalc-dnd.png)
+
+The drop area is shown with a "dotted" border when drag and drop is being used, once the drop data is over that area.
+
+A new window will open showing the dropped data (if valid).
 
 ## Bug Reports
 
