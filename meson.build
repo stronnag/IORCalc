@@ -23,7 +23,9 @@ configure_file(
 )
 configuration_inc = include_directories('build','src')
 
+subdir('data')
 subdir('src')
+subdir('samples')
 
 executable(
   meson.project_name(),
@@ -66,24 +68,15 @@ executable(
   install: false,
   gui_app: false,
 )
-endif
-
-subdir('samples')
-subdir('data')
-
-if host_machine.system() == 'darwin'
-gnome.post_install(
-  gtk_update_icon_cache: true,
-)
+elif host_machine.system() == 'darwin'
+  gnome.post_install(
+    gtk_update_icon_cache: true,
+  )
 else
- if host_machine.system() == 'windows'
-  #
- else
   gnome.post_install(
     gtk_update_icon_cache: true,
     update_desktop_database: true
   )
- endif
 endif
 
 # vala_args : dopts,

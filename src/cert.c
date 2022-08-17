@@ -571,9 +571,6 @@ void ior_cert(ior_rec_t *u, calc_rec_t *c, cert_pages_t *cp) {
     cptr = calloc(1, 2);
     cp->page2[line++] = cptr;
 
-    asprintf(&cptr, "%27cjh+ior@daria.co.uk", ' ');
-    cp->page2[line++] = cptr;
-
     asprintf(&cptr, "%27chttps://github.com/stronnag/IORCalc", ' ');
     cp->page2[line++] = cptr;
 
