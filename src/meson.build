@@ -7,10 +7,10 @@ add_project_arguments(['--pkg', 'ior'], language: 'vala')
 host_os = host_machine.system()
 
 iorsrcs = files('iorcalc.vala', 'iorwindow.vala', 'iorprint.vala', 'iorcertwin.vala',
-		'iorsettings.vala', 'jsonio.vala',
-		'gluefuncs.c', 'calc_hull.c',
-		'calc_rig.c', 'calc_rtg.c', 'print.c', 'calc_prop.c', 'calc_rmc.c',
-		'cert.c', 'iorutil.c', 'iorconst.c', 'report.c')
+		'iorsettings.vala', 'jsonio.vala', 'plotwindow.vala',
+		'gluefuncs.c', 'calc_hull.c', 'calc_rig.c', 'calc_rtg.c',
+		'print.c', 'calc_prop.c', 'calc_rmc.c', 'calc_rig_extra.c',
+		'cert.c', 'iorutil.c', 'iorconst.c', 'report.c', 'plotdata.c')
 
 if host_os == 'windows'
   windows = import('windows')

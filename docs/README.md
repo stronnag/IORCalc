@@ -8,7 +8,7 @@ Calculate IOR ratings like it's 1988 again.
 
 `iorcalc` was last validated against official (RORC Rating Office) certificates in 1986; any 1987-198 rule changes are not validated.
 
-`iorcalc` is a fairly complete coverage of the IOR rule; there are some esoteric rigs that are not covered (gaff, schooners probably). However there is some commented out BASIC code in `calc_rig.c` that should cover the omitted cases if required.
+`iorcalc` is believed to be a complete coverage of the IOR rule amended to January 1988; with esoteric rigs (and Appendix 7 (gaff)).
 
 `iorcalc` was written in 1984/5 to run on a Sinclair QL (QDOS OS). It was largely forgotten until the author stumbled upon an old floppy disk, after which is was updated and a modern UI added.
 
@@ -16,13 +16,13 @@ Calculate IOR ratings like it's 1988 again.
 
 ### Sample Data
 
-Two sample data files are in the repositry `samples` directory. These are also provided in the binary packages, in `$INSTALLTION_ROOT/share/doc/iorcalc/` (where `$INSTALLTION_ROOT` is the base of the installed package). Using the provided binary packages, `/usr` on Linux and `Program Files\iorcalc` on Windows.
+Two sample data files are in the repository `samples` directory. These are also provided in the binary packages, in `$INSTALLTION_ROOT/share/doc/iorcalc/` (where `$INSTALLTION_ROOT` is the base of the installed package). Using the provided binary packages, `/usr` on Linux and `Program Files\iorcalc` on Windows.
 
 ### Data Entry
 
 Launch from a desktop icon or from the command line. If invoked from the command line, a data file may be given; this probably means drag and drop will work in Windows.
 
-Drag and drop onto the [lower status area](#drag_and_drop) is available on FreeBSD, Linux, MacOS; due to a bug in the Windows GTK library it is not *yet* available on Windows.
+Drag and drop onto the [lower status area](#drag-and-drop) is available on all supported OS (FreeBSD, Linux, MacOS and Windows).
 
 ```
 $ iorcalc samples/manitou4.json
@@ -34,11 +34,13 @@ The main window will be displayed (empty without an input file):
 
 The menu (load files etc.) is invoked from the highlighted "hamburger" icon
 
-![menu](assets/iorcalc2.png)11
+![menu](assets/iorcalc2.png)
 
-It is possible to open multiple windows (**New Window**) with independant data and certificate views."Close" closes the window (and quits if it was the only window), "Quit" exits the application.
+It is possible to open multiple windows (**New Window**) with independent data and certificate views."Close" closes the window (and quits if it was the only window), "Quit" exits the application.
 
-The **Calculate Rating** option is only enabled when a representative set of data has been input or loaded.
+The [Calculate Rating](#calculate-rating)  option is only enabled when a representative set of data has been input or loaded.
+
+The [Plot Data](#plot-data) option is only enabled when the rating has been calculated and no subsequent changes have been made.
 
 Data may be saved **Save data file**, **Save As data file** at any time.
 
@@ -68,6 +70,18 @@ After the calculation is completed:
 
 It is possible that the data sanity checks are insufficient, and invalid or missing user entered data could cause the application to crash. In this case, your data will be saved as `$TMP/.iorcalc-save.json` (`$TMP` represents the operating system's temporary directory, typically `/tmp` on Linux / FreeBSB).
 
+### Plot Data
+
+The **Plot Data** option opens a new window that shows crude line plots of the yacht's profile, plan and composite BMAX / Mid Depth section:
+
+![plot01](assets/iorcalcp01.png)
+
+![plot02](assets/iorcalcp02.png)
+
+![plot03](assets/iorcalcp03.png)
+
+Note the red, dashed line between OMD and BWL, to indicate these are from different sections of the yacht which may be separated by a metre or more. Only straight lines are used between points.
+
 ### Viewing the Certificate
 
 When the **Show Certificate** is invoked, the certificate will be displayed in a separate scrollable  window.
@@ -85,7 +99,7 @@ There are three options:
 
      ![certificate](assets/iorcalc6.png)
 
-* **Set printer font**. By default, the system default `Monospace` font is used. This optiom presents a Font Button allowing an alternate font to be used. This is also cached for future use
+* **Set printer font**. By default, the system default `Monospace` font is used. This option presents a Font Button allowing an alternate font to be used. This is also cached for future use
      ![certificate](assets/iorcalc7.png)
 
     Clicking on the Font Button opens a larger dialog allowing selection of a different font.
@@ -102,7 +116,7 @@ There are three options:
 
 ### Drag and Drop
 
-On FreeBSD, Linux and MacOS, it is possible to drag and drop data files onto the lower status area.
+It is possible to drag and drop data files onto the lower status area.
 
 ![dnd](assets/iorcalc-dnd.png)
 
@@ -113,6 +127,14 @@ A new window will open showing the dropped data (if valid).
 ## Bug Reports
 
 If `iorcalc` fails to calculate a rating, or calculates an incorrect rating, please raise an issue on the Github issue tracker. If you have an original IOR certificate for the yacht, a scan of that would help resolve any issues. Please also supply the `iorcalc` JSON data file.
+
+## IOR Rule Book
+
+Unfortunately, there appears to be no official IOR "Red Book" online.
+The following unofficial sources have been found:
+
+* [Scan of January 1992 version](http://www.acmenovelties.net/sailing/ior_rule/). Unfortunately this is incomplete and is a rather low quality scan. In particular, some of the more interesting Section 3 pages are missing.
+* [PDF rendered Nov.1987 version](https://libgen.is/book/index.php?md5=BE960775D0DA5846E15D84D8282EDA7F) and [mirror](https://3lib.net/md5/BE960775D0DA5846E15D84D8282EDA7F). Seems complete. It appears to have been regenerated from a scanned document with cross-references added between rule symbols and sections. A nice IOR research tool.
 
 ## Author, Licence
 

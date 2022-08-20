@@ -30,6 +30,11 @@
         <attribute name="action">win.calc</attribute>
 	<attribute name="accel">&lt;Ctrl&gt;r</attribute>
       </item>
+      <item>
+        <attribute name="label">Plot Sections</attribute>
+        <attribute name="action">win.plot</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;p</attribute>
+      </item>
     </section>
     <section>
       <item>

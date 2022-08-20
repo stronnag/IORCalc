@@ -2,8 +2,8 @@ using Gtk;
 
 public class IORWindow : Gtk.ApplicationWindow {
 	private Gtk.Notebook nb;
-	private void * udata;
-	private void * cdata;
+    IORData.IORRec* udata;
+    IORData.CalcRec* cdata;
 	private Gtk.TextView textview;
 	private Gtk.Button show_cert;
 	private Gtk.Button run_calc;
@@ -90,6 +90,8 @@ public class IORWindow : Gtk.ApplicationWindow {
 					textview.buffer.insert(ref iter, s1, -1);
 				}
 				show_cert.sensitive = true;
+                if(show_cert.sensitive)
+                    set_menu_state("plot", true);
 				FileUtils.unlink(tfn);
 			});
         add_action(aq);
@@ -117,7 +119,23 @@ public class IORWindow : Gtk.ApplicationWindow {
             });
 
         add_action(aq);
-		set_icon_name("iorcalc");
+
+		aq = new GLib.SimpleAction("plot",null);
+        aq.activate.connect(() => {
+                set_menu_state("plot", false);
+                var pw = new PlotWindow();
+                pw.close_request.connect(() => {
+                        set_menu_state("plot", show_cert.sensitive);
+                        return false;
+                    });
+                pw.load(udata, cdata);
+                pw.present();
+            });
+        add_action(aq);
+
+		set_menu_state("plot", false);
+
+        set_icon_name("iorcalc");
 
 		var vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
 		vbox.append (nb);
@@ -162,7 +180,6 @@ public class IORWindow : Gtk.ApplicationWindow {
 		vbox.append (scrolled);
 		vbox.append (bbox);
 
-#if !OS_windows
 #if !OS_freebsd
 		var droptgt = new Gtk.DropTarget(typeof (Gdk.FileList), Gdk.DragAction.COPY);
 		droptgt.on_drop.connect((tgt, value, x, y) => {
@@ -214,12 +231,10 @@ public class IORWindow : Gtk.ApplicationWindow {
 				set_target(textview, false);
 			});
 		textview.add_controller((EventController)droptgt);
-#endif
 		set_child (vbox);
 	}
 
 
-#if !OS_windows
 	public void set_target(Gtk.Widget w, bool active) {
 		string css;
 		if (active) {
@@ -255,12 +270,14 @@ public class IORWindow : Gtk.ApplicationWindow {
 		}
 		return res;
 	}
-#endif
+
 	private void toggle_cert_actions(bool act) {
 		fsmenu_button.sensitive = act;
 		nb.sensitive = act;
 		run_calc.sensitive = act;
 		show_cert.sensitive = act;
+        set_menu_state("plot", act);
+
 	}
 
 	public void setup(IORSet _kf, string? _filename) {
@@ -401,7 +418,8 @@ public class IORWindow : Gtk.ApplicationWindow {
 							var t = IORData.to_string(udata, ent.idx);
 							ent.set_text(t);
 							show_cert.sensitive = false;
-							var is_ok = IORData.is_data_valid(udata);
+                            set_menu_state("plot", false);
+                            var is_ok = IORData.is_data_valid(udata);
 							set_menu_state("calc", is_ok);
 						}
 					});

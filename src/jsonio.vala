@@ -1,5 +1,5 @@
 namespace IORIO {
-	public void save_file(string fn, void *u) {
+	public void save_file(string fn, IORData.IORRec *u) {
 		var os = FileStream.open(fn, "w");
         var builder =  new Json.Builder ();
         builder.begin_object ();
@@ -39,7 +39,7 @@ namespace IORIO {
         os.putc('\n');
 	}
 
-	public void* read_file(string? fn) {
+	public IORData.IORRec* read_file(string? fn) {
 		var u = IORData.allocate_ior_rec();
 		if (fn != null) {
 			try {

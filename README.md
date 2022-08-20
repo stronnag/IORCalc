@@ -9,11 +9,16 @@
 * Graphical data editor
 * Generate IOR certificate
 
-This is based on a program I wrote in 1984 and maintained until 1988 based on the ORC Red Book and amendments. It originally ran on a Sinclair QL QDOS operating system.
+This is based on a program I wrote in 1984 and maintained until 1988 based on the ORC Red Book and amendments. It originally ran on a Sinclair QL / QDOS operating system.
 
-It has been recently modernised to contemporary C standards and a GTK3 UI added to replace the legacy QL UI.
+It has been recently modernised to contemporary C standards and a GTK UI added to replace the legacy QL TUI.
 
-It is largely complete, missing only some esoteric rig options (Gaff rig etc), and believed to be accurate (when last compared to an official certificate in 1986, it was in complete agreement). The later changes 1987-88 are unverified.
+It is a complete IOR'88 implementation, including all rig options (even Appendix 7  gaff rig).
+
+* The more esoteric rig options (ketch, schooner, yawl, gaff are untested as the author has no examples).
+* The post 1986 (1987-88) updates are untested.
+
+Otherwise, it is believed to be accurate; when last compared to official certificates in 1986, it was in complete agreement (with RORC Rating Office issued certificates).
 
 ## Binary Release Media
 
@@ -77,7 +82,7 @@ Requirements:
 
 ### Legacy GTK+-3.0 branch
 
-There is also a `gtk3` branch. This is less functional than the GTK4/`master` branch, and is no longer maintained. It does however compile and function for users of older Linux distributions. There is no need to use it on modern Linux, FreeBSD, MacOS or Windows.
+There is a `gtk3` branch. This is less functional than the GTK4/`master` branch, and is no longer maintained. It does however compile and function for users of older Linux distributions. There is no need to use it on modern Linux, FreeBSD, MacOS or Windows.
 
 In the above build instructions, replace `gtk4` with the equivalent `gtk3` / `gtk+-3.0` package name.
 

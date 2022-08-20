@@ -4,7 +4,7 @@ public class CertWindow : Gtk.Window {
 	private Gtk.TextView certview;
 	private IORPrint iorprt;
 
-	public  CertWindow(Gtk.Window _w, IORSet kf, void *u, void *c) {
+	public  CertWindow(Gtk.Window _w, IORSet kf, IORData.IORRec* u, IORData.CalcRec* c) {
 		iorprt = new IORPrint(kf.kf);
 		iorprt.font_changed.connect((s) => {
 				if(certview.buffer.text != null) {
