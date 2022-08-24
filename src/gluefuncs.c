@@ -300,7 +300,7 @@ int get_field(int j, edit_field_t *ef) {
   }
 }
 
-void update_rec(char *dt, ior_rec_t *u, int count) {
+void update_rec(const char *dt, ior_rec_t *u, int count) {
   switch (editlist[count].flag) {
   case EDIT_TYPE_ED_C:
     set_string(dt, u, count);
@@ -346,4 +346,4 @@ void set_int(int v, ior_rec_t *u, int count) { *(int *)((void*)u + editlist[coun
 
 void set_double(double d, ior_rec_t *u, int count) { *(double *)((void*)u + editlist[count].offset) = d; }
 
-void set_string(char *s, ior_rec_t *u, int count) { strcpy((void*)u + editlist[count].offset, s); }
+void set_string(const char *s, ior_rec_t *u, int count) { strcpy((void*)u + editlist[count].offset, s); }

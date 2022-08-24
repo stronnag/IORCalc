@@ -25,7 +25,11 @@ namespace IChooser {
 		if(fty == "json") {
 			filter.set_filter_name ("JSON files");
 			filter.add_pattern ("*.json");
-		} else {
+            fc.add_filter (filter);
+            filter = new Gtk.FileFilter ();
+			filter.set_filter_name ("Binary (raw)");
+			filter.add_pattern ("*.iorbin");
+        } else {
 			filter.set_filter_name ("Text files");
 			filter.add_pattern ("*.txt");
 		}
@@ -34,7 +38,6 @@ namespace IChooser {
 		filter.set_filter_name ("All Files");
 		filter.add_pattern ("*");
 		fc.add_filter (filter);
-		fc.show();
 		return fc;
 	}
 }

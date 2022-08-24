@@ -4,18 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-ior_rec_t *allocate_ior_rec(void) {
-  ior_rec_t *nr = malloc(sizeof(ior_rec_t));
-  if (nr != NULL)
-    memset(nr, 0, sizeof(ior_rec_t));
-  return nr;
-}
-
-calc_rec_t *allocate_calc_rec(void) {
-  calc_rec_t *nr = malloc(sizeof(calc_rec_t));
-  return nr;
-}
-
 char *calc_ior(ior_rec_t *u, calc_rec_t *c) {
   memset(c, 0, sizeof(calc_rec_t));
   calc_hull(u, c);

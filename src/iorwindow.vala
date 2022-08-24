@@ -42,6 +42,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 				} catch {};
 
 				var fc = IChooser.chooser(this, dir, Gtk.FileChooserAction.OPEN);
+                fc.present();
 				fc.response.connect((result) => {
 						if (result== Gtk.ResponseType.ACCEPT) {
 							var fn = fc.get_file().get_path ();
@@ -308,6 +309,12 @@ public class IORWindow : Gtk.ApplicationWindow {
 			dir = kf.kf.get_string("iorcalc", "out-dir");
 		} catch {};
 		var fc = IChooser.chooser(this, dir, Gtk.FileChooserAction.SAVE);
+        fc.add_choice("SFORMAT", "Format",
+                              {"j", "b"},
+                              {"JSON", "Binary"});
+
+
+        fc.present();
 		fc.response.connect((result) => {
 				if (result== Gtk.ResponseType.ACCEPT) {
 					var fn = fc.get_file().get_path ();
@@ -316,7 +323,8 @@ public class IORWindow : Gtk.ApplicationWindow {
 						kf.kf.set_string("iorcalc", "out-dir", dn);
 					}
 					filename = fn;
-					IORIO.save_file(filename, udata);
+                    var sfmt = fc.get_choice("SFORMAT");
+					IORIO.save_file(filename, udata, sfmt);
 				}
 				fc.close();
 			});

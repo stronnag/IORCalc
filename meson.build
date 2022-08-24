@@ -43,6 +43,7 @@ executable(
   include_directories : configuration_inc,
   c_args: '-D_GNU_SOURCE',
   vala_args : vopts,
+  link_with : staticlib,
   install: true,
   gui_app: true,
 )
@@ -64,6 +65,7 @@ executable(
   include_directories : configuration_inc,
   c_args: '-D_GNU_SOURCE',
   vala_args : vopts,
+  link_with : staticlib,
   build_by_default: false,
   install: false,
   gui_app: false,

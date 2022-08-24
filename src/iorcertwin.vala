@@ -44,10 +44,16 @@ public class CertWindow : Gtk.Window {
 		var saq = new GLib.SimpleAction("save",null);
         saq.activate.connect(() => {
 				var fc = IChooser.chooser(this, null, Gtk.FileChooserAction.SAVE, "txt");
-				fc.response.connect((result) => {
+                fc.add_choice("PAGING", "Paging",
+                              {"2", "1"},
+                              {"Two Pages", "Single Page"});
+                fc.present();
+                fc.response.connect((result) => {
 						if (result== Gtk.ResponseType.ACCEPT) {
-							var fn = fc.get_file().get_path ();
-							IORData.pcert(u, c, fn, 2);
+                            var pchoice = fc.get_choice("PAGING");
+                            var fn = fc.get_file().get_path ();
+                            int pg = (pchoice == "1") ? 1 : 2;
+							IORData.pcert(u, c, fn, pg);
 						}
 						fc.close();
 					});

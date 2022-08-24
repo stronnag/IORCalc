@@ -21,7 +21,7 @@ char *show_rtg(ior_rec_t *u, calc_rec_t *c) {
   return buf;
 }
 
-static void write_file(char *fn, cert_pages_t *cp, int opt) {
+static void write_file(const char *fn, cert_pages_t *cp, int opt) {
   FILE *fp;
 
   if (fn == NULL || *fn == 0 || (*fn == '-' && *(fn + 1) == 0)) {
@@ -70,7 +70,7 @@ static void write_file(char *fn, cert_pages_t *cp, int opt) {
   fclose(fp);
 }
 
-void pcert(ior_rec_t *u, calc_rec_t *c, char *fn, int opt) {
+void pcert(ior_rec_t *u, calc_rec_t *c, const char *fn, int opt) {
   cert_pages_t *pages = new_cert_pages_t();
   ior_cert(u, c, pages);
   write_file(fn, pages, opt);

@@ -30,7 +30,7 @@ typedef struct cert_pages {
 } cert_pages_t;
 
 extern int get_field(int j, edit_field_t *ef);
-extern void update_rec(char *dt, ior_rec_t *u, int count);
+extern void update_rec(const char *dt, ior_rec_t *u, int count);
 extern char *get_as_string(ior_rec_t *u, int count);
 extern ior_rec_t* read_file(char *f);
 extern int get_int(ior_rec_t *u, int count);
@@ -39,7 +39,7 @@ extern char *get_string(ior_rec_t *u, int count);
 
 extern void set_int(int v, ior_rec_t *u, int count);
 extern void set_double(double d, ior_rec_t *u, int count);
-extern void set_string(char *s, ior_rec_t *u, int count);
+extern void set_string(const char *s, ior_rec_t *u, int count);
 
 extern ior_rec_t *allocate_ior_rec(void);
 extern calc_rec_t *allocate_calc_rec(void);
@@ -58,7 +58,7 @@ extern void calc_rig(ior_rec_t *u, calc_rec_t *c);
 extern void calc_rtg(ior_rec_t *u, calc_rec_t *c);
 extern char *show_rtg(ior_rec_t *u, calc_rec_t *c);
 extern void ior_cert(ior_rec_t *, calc_rec_t *, cert_pages_t *);
-extern void pcert(ior_rec_t *u, calc_rec_t *c, char *, int);
+extern void pcert(ior_rec_t *u, calc_rec_t *c, const char *, int);
 extern char *report(ior_rec_t *u, calc_rec_t *c);
 
 extern cert_pages_t *new_cert_pages_t();
