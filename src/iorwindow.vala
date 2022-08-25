@@ -11,6 +11,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 	private string? filename;
 	private IORSet kf;
 	private Gtk.MenuButton fsmenu_button;
+    private Gtk.HeaderBar header_bar;
 
 	public IORWindow() {
 		udata = null;
@@ -18,7 +19,7 @@ public class IORWindow : Gtk.ApplicationWindow {
         set_default_size (800, 720);
 		nb = new Gtk.Notebook();
 
-		var header_bar = new Gtk.HeaderBar ();
+		header_bar = new Gtk.HeaderBar ();
 		header_bar.decoration_layout = "icon:menu,minimize,maximize,close";
 		header_bar.set_title_widget (new Gtk.Label("IOR Rating Calculator"));
 		header_bar.set_show_title_buttons(true);
@@ -299,12 +300,25 @@ public class IORWindow : Gtk.ApplicationWindow {
 	}
 
 	public void run() {
-		udata = IORIO.read_file(filename);
-		populate_grid();
-		var is_ok = IORData.is_data_valid(udata);
-		set_menu_states(is_ok);
+        ioropen(filename, false);
 		present();
 	}
+
+	public void ioropen(string? fn, bool update=true) {
+		udata = IORIO.read_file(fn);
+        if(update) {
+            update_grid();
+        } else {
+            populate_grid();
+        }
+		var is_ok = IORData.is_data_valid(udata);
+		set_menu_states(is_ok);
+        if(((string)udata.yacht).length > 0) {
+            var s = "IORCalc - %s".printf((string)udata.yacht);
+            header_bar.set_title_widget (new Gtk.Label(s));
+        }
+	}
+
 
 	public IEntry? find_ientry(int i) {
 		foreach(var e in elist) {
@@ -344,13 +358,6 @@ public class IORWindow : Gtk.ApplicationWindow {
 
 	private void set_menu_states(bool is_ok) {
 		set_menu_state("calc", is_ok);
-	}
-
-	public void ioropen(string? fn) {
-		udata = IORIO.read_file(fn);
-		update_grid();
-		var is_ok = IORData.is_data_valid(udata);
-		set_menu_states(is_ok);
 	}
 
 	private void update_grid() {
@@ -403,7 +410,6 @@ public class IORWindow : Gtk.ApplicationWindow {
 			lab = new Gtk.Label(strdup(ef.prompt));
 			lab.justify = Gtk.Justification.LEFT;
 			lab.xalign = 0;
-//			lab.set_padding(2,0);
 			if (ef.flag != IORData.EditType.ED_T) {
 				grid.attach(lab, col, row);
 				col++;

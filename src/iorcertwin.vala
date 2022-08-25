@@ -12,7 +12,7 @@ public class CertWindow : Gtk.Window {
 				}
 			});
 
-		set_title("IOR Certifiate");
+        title = "IORCalc Certificate - %s".printf((string)u.yacht);
 		set_transient_for(_w);
 		set_default_size (1200, 800);
 

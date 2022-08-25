@@ -177,27 +177,11 @@ public class PlotWindow : Gtk.Window {
         set_child (nb);
     }
     public void load(IORData.IORRec* u, IORData.CalcRec *c) {
+        if(((string)u.yacht).length > 0) {
+            title = "IORCalc Plots - %s".printf((string)u.yacht);
+        }
         for(var i = 0; i < 3; i++) {
             das[i].loadpoints(u, c);
         }
     }
 }
-
-#if TEST
-int main (string?[] args) {
-    if(args.length > 1) {
-        Gtk.init ();
-        var cdata = IORData.allocate_calc_rec();
-        var  udata = IORIO.read_file(args[1]);
-        IORData.calc_ior(udata, cdata);
-        var pw = new PlotWindow();
-        pw.load(udata, cdata);
-        pw.present();
-        var ml = MainContext.@default();
-        while(Gtk.Window.get_toplevels().get_n_items() > 0) {
-            ml.iteration(true);
-        }
-    }
-    return 0;
-}
-#endif

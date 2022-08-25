@@ -6,29 +6,32 @@ Calculate IOR ratings like it's 1988 again.
 
 `iorcalc` is an application to input / edit IOR measurement data and generate IOR rating certificates. The application includes all rule amendments to January 1988; after which the author started sailing on non-IOR (CHS) yachts.
 
-`iorcalc` was last validated against official (RORC Rating Office) certificates in 1986; any 1987-198 rule changes are not validated.
+`iorcalc` was last validated against official (RORC Rating Office) certificates in 1986; any 1987-1988 rule changes are not validated.
 
-`iorcalc` is believed to be a complete coverage of the IOR rule amended to January 1988; with esoteric rigs (and Appendix 7 (gaff)).
+`iorcalc` is believed to be a complete coverage of the IOR rule amended to January 1988; including esoteric rigs (and Appendix 7 (gaff)).
 
-`iorcalc` was written in 1984/5 to run on a Sinclair QL (QDOS OS). It was largely forgotten until the author stumbled upon an old floppy disk, after which is was updated and a modern UI added.
+`iorcalc` was written in 1984/5 to run on a Sinclair QL (QDOS OS). It was largely forgotten until the author stumbled upon an old floppy disk, after which it was updated and a modern UI added.
 
 ## Usage
 
 ### Sample Data
 
-Two sample data files are in the repository `samples` directory. These are also provided in the binary packages, in `$INSTALLTION_ROOT/share/doc/iorcalc/` (where `$INSTALLTION_ROOT` is the base of the installed package). Using the provided binary packages, `/usr` on Linux and `Program Files\iorcalc` on Windows.
+Two sample data files are in the repository `samples` directory.
+
+These are also provided in the binary packages, in `$INSTALLTION_ROOT/share/doc/iorcalc/` (where `$INSTALLTION_ROOT` is the base of the installed package). Using the provided binary packages, `/usr` on Linux and `Program Files\iorcalc` on Windows.
 
 ### Data Entry
 
-Launch from a desktop icon or from the command line. If invoked from the command line, a data file may be given; this probably means drag and drop will work in Windows.
+Launch from a desktop icon or from the command line. If invoked from the command line, data files may be given; drag and drop onto the icon should also work (OS dependent).
 
 Drag and drop onto the [lower status area](#drag-and-drop) is available on all supported OS (FreeBSD, Linux, MacOS and Windows).
 
 ```
-$ iorcalc samples/manitou4.json
+# Command line, with files
+$ iorcalc manitou4.json summerwine.iorbin
 ```
 
-The main window will be displayed (empty without an input file):
+The main window will be displayed (empty without a data file):
 
 ![mainwindow](assets/iorcalc1.png)
 
@@ -36,7 +39,7 @@ The menu (load files etc.) is invoked from the highlighted "hamburger" icon
 
 ![menu](assets/iorcalc2.png)
 
-It is possible to open multiple windows (**New Window**) with independent data and certificate views."Close" closes the window (and quits if it was the only window), "Quit" exits the application.
+It is possible to open multiple windows (**New Window**) with independent data, calculation and certificate views."Close" closes the window (and quits if it was the only window), "Quit" exits the application.
 
 The [Calculate Rating](#calculate-rating)  option is only enabled when a representative set of data has been input or loaded.
 
@@ -44,7 +47,7 @@ The [Plot Data](#plot-data) option is only enabled when the rating has been calc
 
 Data may be saved **Save data file**, **Save As data file** at any time.
 
-The **Open data file** option presents a file chooser to allow the selection of previously saved data file (JSON format (or binary)). This will populate the data tabs `Names`, `Hull`, `Afloat/Prop` and `Rig`, for example:
+The **Open data file** option presents a file chooser to allow the selection of previously saved data file (JSON format (or binary)). This will populate the data tabs `Names`, `Hull`, `Afloat/Prop` and `Rig`.
 
 Manual data entry requires that each of the tabs be populated. In particular, the **Calculate Raing** option will not be enabled until the following items are populated:
 
@@ -66,7 +69,7 @@ Once sufficient data is entered to calculate the rating, this may be invoked fro
 After the calculation is completed:
 
 * A summary is presented below the input form
-* The **Show Certificate** button is enabled.
+* The [Plot Data](#plot-data) menu item and [Show Certificate](#viewing-the-certificate) button are enabled.
 
 It is possible that the data sanity checks are insufficient, and invalid or missing user entered data could cause the application to crash. In this case, your data will be saved as `$TMP/.iorcalc-save.json` (`$TMP` represents the operating system's temporary directory, typically `/tmp` on Linux / FreeBSB).
 
