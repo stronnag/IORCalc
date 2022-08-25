@@ -466,6 +466,9 @@ namespace IORData {
 	[CCode (cheader_filename = "iorext.h", cname = "allocate_calc_rec")]
 	IORData.CalcRec* allocate_calc_rec();
 
+	[CCode (cheader_filename = "iorext.h", cname = "is_empty")]
+	bool is_empty(IORData.IORRec* u);
+
 	[CCode (cheader_filename = "iorext.h", cname = "is_data_valid")]
 	bool is_data_valid(IORData.IORRec* u);
 

@@ -42,18 +42,27 @@ public class IORWindow : Gtk.ApplicationWindow {
 				} catch {};
 
 				var fc = IChooser.chooser(this, dir, Gtk.FileChooserAction.OPEN);
+                fc.select_multiple = true;
                 fc.present();
 				fc.response.connect((result) => {
 						if (result== Gtk.ResponseType.ACCEPT) {
-							var fn = fc.get_file().get_path ();
-							var dn = Path.get_dirname(fn);
-							if (dn != null) {
-								kf.kf.set_string("iorcalc", "in-dir", dn);
-							}
-							filename = fn;
-							ioropen(filename);
-							textview.buffer.text = "";
-						}
+                            var files = fc.get_files();
+                            for(var j = 0; j < files.get_n_items(); j++) {
+                                var gfile = files.get_item(j) as File;
+                                var fn = gfile.get_path ();
+                                if (j == 0) {
+                                    var dn = Path.get_dirname(fn);
+                                    if (dn != null) {
+                                        kf.kf.set_string("iorcalc", "in-dir", dn);
+                                    }
+                                    filename = fn;
+                                    ioropen(filename);
+                                    textview.buffer.text = "";
+                                } else {
+                                    load_file(fn);
+                                }
+                            }
+                        }
 						fc.close();
 					});
 			});
@@ -189,12 +198,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 					var flist = ((Gdk.FileList)value).get_files();
 					foreach(var u in flist) {
 						var fn = u.get_path();
-						if(valid_file(fn)) {
-							var w = new IORWindow();
-							this.application.add_window (w);
-							w.setup(kf, fn);
-							w.run();
-						}
+                        load_file(fn);
 					}
 				}
 				return true;
@@ -209,12 +213,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 						if (u!= null && u.length > 0) {
 							try {
 								var fn = Filename.from_uri(u);
-								if(valid_file(fn)) {
-									var w = new IORWindow();
-									this.application.add_window (w);
-									w.setup(kf, fn);
-									w.run();
-								}
+                                load_file(fn);
 							} catch (Error e) {
 								stderr.printf("drop: %s %s\n", u, e.message);
 							}
@@ -235,6 +234,18 @@ public class IORWindow : Gtk.ApplicationWindow {
 		set_child (vbox);
 	}
 
+    private void load_file(string fn) {
+        if(valid_file(fn)) {
+            if(IORData.is_empty(udata)) {
+                ioropen(fn);
+            } else {
+                var w = new IORWindow();
+                this.application.add_window (w);
+                w.setup(kf, fn);
+                w.run();
+            }
+        }
+    }
 
 	public void set_target(Gtk.Widget w, bool active) {
 		string css;
@@ -260,12 +271,13 @@ public class IORWindow : Gtk.ApplicationWindow {
 			}
 			string buf;
 			if(FileUtils.get_contents(fn, out buf)) {
-				if(buf.contains("\"yacht\" : ") &&
-				   buf.contains("\"icert\" : ") &&
-				   buf.contains("\"irgy\" : ") &&
-				   buf.contains("\"bmax\" : ") )
-					res = true;
-				}
+                if (buf.has_prefix("ior88") ||
+                    (buf.contains("\"yacht\" : ") &&
+                     buf.contains("\"icert\" : ") &&
+                     buf.contains("\"irgy\" : ") &&
+                     buf.contains("\"bmax\" : ")))
+                res = true;
+            }
 		} catch (Error e) {
 			print("validate %s\n", e.message);
 		}

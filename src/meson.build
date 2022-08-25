@@ -11,7 +11,7 @@ libsrc = files('ioralloc.c', 'gluefuncs.c', 'calc_hull.c', 'calc_rig.c', 'calc_r
 	       'cert.c', 'iorutil.c', 'iorconst.c', 'report.c', 'plotdata.c')
 
 iorsrcs = files('iorcalc.vala', 'iorwindow.vala', 'iorprint.vala', 'iorcertwin.vala',
-		'iorsettings.vala', 'jsonio.vala', 'plotwindow.vala')
+		'iorsettings.vala', 'jsonio.vala', 'plotwindow.vala', 'iormisc.vala')
 
 staticlib = static_library('iorcalc',
                            libsrc,

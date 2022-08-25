@@ -43,6 +43,7 @@ extern void set_string(const char *s, ior_rec_t *u, int count);
 
 extern ior_rec_t *allocate_ior_rec(void);
 extern calc_rec_t *allocate_calc_rec(void);
+extern bool is_empty(ior_rec_t *u);
 
 extern bool is_data_valid(ior_rec_t *u);
 extern edit_field_t *find_field_by_name(char *name, ior_rec_t *u);

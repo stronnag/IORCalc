@@ -44,18 +44,18 @@ The [Plot Data](#plot-data) option is only enabled when the rating has been calc
 
 Data may be saved **Save data file**, **Save As data file** at any time.
 
-The **Open data file** option presents a file chooser to allow the selection of previously saved data file (JSON format). This will populate the data tabs `Names`, `Hull`, `Afloat/Prop` and `Rig`, for example:
+The **Open data file** option presents a file chooser to allow the selection of previously saved data file (JSON format (or binary)). This will populate the data tabs `Names`, `Hull`, `Afloat/Prop` and `Rig`, for example:
 
 Manual data entry requires that each of the tabs be populated. In particular, the **Calculate Raing** option will not be enabled until the following items are populated:
 
 * Yacht (name)
 * Sail number
 * Age data
-* Hull data: LOA,  FGO, AGO,  FD, CMD, MD, OMD, BMAX, B, BF, BFI, BAI, BA, GD, Y, VHAI, VHA, SBMAX, SDM, FSS, FFS, FFIS, FFDS, FBIS, FMDS, FAIS, FAS, DMS
-* Afloat data: FF, FA, BWL
-* Rig data: P, E, BAS (so cat rigs are OK).
+* Hull data: `LOA`, `FGO`, `FD`,  `CMD`,   `MD`, `OMD`, `BMAX`, `B`, `BF`, `BA`, `VHA`, `SBMAX`, `SDM`, `FSS`, `FFS`,  `FFIS`, `FFDS`, `FMDS`, `FAS`, `DMS`.
+* Afloat data: `FF`, `FA`, `BWL`, `PL`
+* Rig data: `P`, `E`, `BAS` (so cat rigs are OK).
 
-This is just a representative sanity sample.
+This is just a representative sanity sample, rather than an absolute requirement for calculation.
 
 ![menu](assets/iorcalc3.png)
 
@@ -80,7 +80,7 @@ The **Plot Data** option opens a new window that shows crude line plots of the y
 
 ![plot03](assets/iorcalcp03.png)
 
-Note the red, dashed line between OMD and BWL, to indicate these are from different sections of the yacht which may be separated by a metre or more. Only straight lines are used between points.
+Note the red, dashed line between `OMD` and `BWL`, to indicate these are from different sections of the yacht which may be separated by a metre or more. Only straight lines are used between points.
 
 ### Viewing the Certificate
 
@@ -94,7 +94,7 @@ This also has a menu:
 
 There are three options:
 
-* **Save certificate** : Saves the certificate as a text document (two separate pages, separated by `FORMFEED` (`Ctrl-L`).
+* **Save certificate** : Saves the certificate as a text document. The combo box (bottom left) allows saving as either a single (wide, landscape) page or two separate portrait pages separated by `FORMFEED` (`Ctrl-L`).
 * **Print** : Prints the certificate, using the operating system Print Dialog. If `portrait` is selected, the certificate is printed on two sheets, if `landscape`, the certificate is printed on a single sheet. Print to file (PDF, PS, SVG, XPS) as available in the native dialogue. The choices (PDF / Printer, Portrait / Landscape, PDF file name) are cached for future use.
 
      ![certificate](assets/iorcalc6.png)
@@ -110,9 +110,8 @@ There are three options:
 #### Printing details
 
 * If `portrait` is selected, the selected font and size are used without further analysis. A 10 point font should fit on an A4 / US Letter page. Most operating systems have a `Preview` option to verify that the font will allow output page coverage.
-* If `landscape` is selected, the font is scaled to fit the two pages of the certificate  on the printer page. On A4, this results in a readable c. 7pt font. The font will not be scaled above the user specified size.
-* On MacOS, it appears necessary to build against GTK4 to get working printing.
-
+* If `landscape` is selected, the font is scaled to fit the two pages of the certificate  on the printer page. On A4 (and probably US Letter), this results in a readable c. 7pt font. The font will not be scaled above the user specified size.
+* On MacOS, it is necessary to build against GTK4 (master branch, default) to get working printing.
 
 ### Drag and Drop
 
@@ -134,7 +133,7 @@ Unfortunately, there appears to be no official IOR "Red Book" online.
 The following unofficial sources have been found:
 
 * [Scan of January 1992 version](http://www.acmenovelties.net/sailing/ior_rule/). Unfortunately this is incomplete and is a rather low quality scan. In particular, some of the more interesting Section 3 pages are missing.
-* [PDF rendered Nov.1987 version](https://libgen.is/book/index.php?md5=BE960775D0DA5846E15D84D8282EDA7F) and [mirror](https://3lib.net/md5/BE960775D0DA5846E15D84D8282EDA7F). Seems complete. It appears to have been regenerated from a scanned document with cross-references added between rule symbols and sections. A nice IOR research tool.
+* [Nov.1987 version](https://libgen.is/book/index.php?md5=BE960775D0DA5846E15D84D8282EDA7F) and [mirror](https://3lib.net/md5/BE960775D0DA5846E15D84D8282EDA7F). Appears complete.
 
 ## Author, Licence
 

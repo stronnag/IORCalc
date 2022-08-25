@@ -236,9 +236,10 @@ static edit_field_t editlist[] = {
 
 size_t editlist_length1 = (sizeof(editlist) / sizeof(edit_field_t));
 
-static char *attrs[] = {"yacht", "sail", "yr",   "loa", "fgo", "ago",  "fd",  "cmd",   "md",  "omd", "bmax", "b",    "bf",
-                        "bfi",   "bai",  "ba",   "gd",  "y",   "vhai", "vha", "sbmax", "sdm", "fss", "ffs",  "ffis", "ffds",
-                        "fbis",  "fmds", "fais", "fas", "dms", "ffm",  "fam", "bwl",   "pl",  "p",   "e",    "bas"};
+static char *attrs[] = {"yacht", "sail", "yr",   "loa", "fgo", "fd",  "cmd",   "md",
+                        "omd", "bmax", "b",    "bf", "ba", "vha", "sbmax",
+                        "sdm", "fss", "ffs",  "ffis", "ffds", "fmds", "fas",
+                        "dms", "ffm",  "fam", "bwl",   "pl",  "p",   "e",    "bas"};
 
 bool is_data_valid(ior_rec_t *u) {
   edit_field_t *ep = NULL;
