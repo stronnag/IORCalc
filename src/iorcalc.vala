@@ -79,7 +79,7 @@ public class IORCalc : Gtk.Application {
 	private int _command_line (ApplicationCommandLine command_line) {
 		string[] args = command_line.get_arguments ();
 		if(args.length > 1) {
-            foreach(var a in args[1:]) {
+            foreach(var a in args[1:args.length]) {
                 fileargs += a;
             }
 		}
