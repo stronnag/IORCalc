@@ -185,7 +185,7 @@ static edit_field_t editlist[] = {
     {"HBS", "hbs", offsetof(ior_rec_t, hbs), 8, 6, 1, EDIT_TYPE_ED_F},
     {"FSP", "fsp", offsetof(ior_rec_t, fsp), 8, 8, 1, EDIT_TYPE_ED_F},
     {"SPS", "sps", offsetof(ior_rec_t, sps), 8, 0, 2, EDIT_TYPE_ED_F},
-    {"SJS", "sfs", offsetof(ior_rec_t, sfs), 8, 2, 2, EDIT_TYPE_ED_F},
+    {"SFJ", "sfs", offsetof(ior_rec_t, sfs), 8, 2, 2, EDIT_TYPE_ED_F},
     {"GO", "go", offsetof(ior_rec_t, go), 8, 4, 2, EDIT_TYPE_ED_F},
     {"MW", "mw", offsetof(ior_rec_t, mw), 8, 6, 2, EDIT_TYPE_ED_F},
     {"Rig Factor:", "mpen", offsetof(ior_rec_t, mpen), 1, 8, 2, EDIT_TYPE_ED_I},
