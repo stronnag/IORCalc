@@ -59,7 +59,7 @@ class IORPrint : Object {
 			lines = llines;
 			lbreak[0] = 0;
 		}
-		return string.joinv("\n", lines);
+        return string.joinv("\n", lines);
 	}
 
 	private void find_print_settings() {
@@ -96,40 +96,30 @@ class IORPrint : Object {
 		}
 		printop.embed_page_setup = true;
 		printop.begin_print.connect((ctxt) => {
-				double height = ctxt.get_height() * Pango.SCALE;
-				double width = ctxt.get_width() * Pango.SCALE;
+                int height = (int) ctxt.get_height();
+				int width = (int) ctxt.get_width();
+                layout = ctxt.create_pango_layout();
 				if(width > height) {
 					var lfdesc = fdesc;
 					var fsize = fdesc.get_size ();
 					string s = generate_string(true);
-					for(var i =0 ; i < 10; i++) {
-						layout = ctxt.create_pango_layout();
-						lfdesc.set_size (fsize);
-						layout.set_font_description (lfdesc);
-						layout.set_text(s,-1);
-						Pango.Rectangle r1;
-						Pango.Rectangle r2;
-						layout.get_extents (out r1, out r2);
-						double fw = fsize;
-						double fh = fsize;
-						bool shrink = false;
-						if ( r2.width  > width) {
-							fw = fsize * width / r2.width;
-							shrink = true;
-						}
-						if ( r2.height > height) {
-							fh = fsize * height / r2.height ;
-							shrink = true;
-						}
-						if(shrink == false) {
-							break;
-						}
-						fsize = (int)((fw < fh) ? fw : fh);
-					}
+                    lfdesc.set_size (fsize);
+                    layout.set_font_description (lfdesc);
+                    layout.set_text(s,-1);
+                    int pw;
+                    int ph;
+                    int fw = fsize;
+                    int fh = fsize;
+                    layout.get_pixel_size(out pw, out ph);
+                    fw = fsize * width / pw;
+                    fh = fsize * height / ph ;
+                    fsize = ((fw < fh) ? fw : fh);
+                    lfdesc.set_size (fsize);
+                    layout.set_font_description (lfdesc);
+                    layout.set_text(s,-1);
 					printop.set_n_pages(1);
 				} else {
 					string s = generate_string(false);
-					layout = ctxt.create_pango_layout();
 					layout.set_font_description (fdesc);
 					layout.set_text(s,-1);
 					printop.set_n_pages(2);
