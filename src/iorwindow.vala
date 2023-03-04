@@ -193,7 +193,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 
 #if !OS_freebsd
 		var droptgt = new Gtk.DropTarget(typeof (Gdk.FileList), Gdk.DragAction.COPY);
-		droptgt.drop.connect((tgt, value, x, y) => {
+		droptgt.on_drop.connect((tgt, value, x, y) => {
 				set_target(textview, false);
 				if(value.type() == typeof (Gdk.FileList)) {
 					var flist = ((Gdk.FileList)value).get_files();
