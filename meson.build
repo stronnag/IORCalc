@@ -1,4 +1,8 @@
-project('iorcalc', 'vala', 'c', version : '1.3.0')
+project('iorcalc', 'vala', 'c', version : '1.3.1')
+
+# For now, as some replacements are not  well defined.
+add_project_arguments('-Wno-deprecated-declarations', language : 'c')
+add_project_arguments('--enable-deprecated', language : 'vala')
 
 conf_data = configuration_data()
 conf_data.set('version', meson.project_version())
@@ -21,7 +25,7 @@ configure_file(
   output : 'iorcalc-config.h',
   configuration : conf_data
 )
-configuration_inc = include_directories('build','src')
+configuration_inc = include_directories('.','src')
 
 subdir('data')
 subdir('src')
