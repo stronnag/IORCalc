@@ -1,8 +1,10 @@
-project('iorcalc', 'vala', 'c', version : '1.3.1')
+project('iorcalc', 'vala', 'c', version : '1.3.2')
 
-# For now, as some replacements are not  well defined.
-add_project_arguments('-Wno-deprecated-declarations', language : 'c')
-add_project_arguments('--enable-deprecated', language : 'vala')
+show_deprecated = get_option('deprecations')
+if show_deprecated  == false
+  add_project_arguments('-Wno-deprecated-declarations', language : 'c')
+  add_project_arguments('--enable-deprecated', language : 'vala')
+endif
 
 conf_data = configuration_data()
 conf_data.set('version', meson.project_version())
@@ -26,6 +28,15 @@ configure_file(
   configuration : conf_data
 )
 configuration_inc = include_directories('.','src')
+
+r = run_command('pkg-config', '--modversion', 'gtk4',  check: true)
+if r.returncode() != 0
+  error('failed to get champlain version')
+endif
+gtkvers = r.stdout().strip()
+if gtkvers.version_compare('<4.12.0')
+  vopts += '--define=CSS_USE_LOAD_DATA'
+endif
 
 subdir('data')
 subdir('src')
