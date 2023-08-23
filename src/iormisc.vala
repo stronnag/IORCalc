@@ -54,6 +54,16 @@ namespace Util {
         var s = Path.build_filename (t, ".ior-%d-%08x".printf(Posix.getpid(), ir));
 		return s;
 	}
+
+	public void load_provider_string(ref Gtk.CssProvider provider, string str) {
+#if CSS_USE_LOAD_DATA
+        provider.load_from_data(str.data);
+#elif CSS_USE_LOAD_DATA_STR_LEN
+        provider.load_from_data(str, -1);
+#else
+        provider.load_from_string(str);
+#endif
+	}
 }
 
 public class IEntry : Gtk.Entry {

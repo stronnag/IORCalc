@@ -113,11 +113,7 @@ public class CertWindow : Gtk.Window {
 	private void set_cert_text_font(string fontname) {
 		var css = "textview {font-family: \"%s\",monospace;}".printf(fontname);
 		var provider = new CssProvider();
-#if CSS_USE_LOAD_DATA
-        provider.load_from_data(css.data);
-#else
-        provider.load_from_string(css);
-#endif
+		Util.load_provider_string(ref provider, css);
 		var stylec = certview.get_style_context();
 		stylec.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 	}
