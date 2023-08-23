@@ -29,15 +29,7 @@ configure_file(
 )
 configuration_inc = include_directories('.','src')
 
-r = run_command('pkg-config', '--modversion', 'gtk4',  check: true)
-if r.returncode() != 0
-  error('failed to get champlain version')
-endif
-gtkvers = r.stdout().strip()
-if gtkvers.version_compare('<4.12.0')
-  vopts += '--define=CSS_USE_LOAD_DATA'
-endif
-
+subdir('meson')
 subdir('data')
 subdir('src')
 subdir('samples')
