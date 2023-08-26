@@ -53,6 +53,7 @@ public class IORCalc : Gtk.Application {
         } else {
             create_ior_window(null);
         }
+		Util.init_css();
     }
 
 	private void create_ior_window(string? fn=null) {

@@ -42,29 +42,30 @@ public class IORWindow : Gtk.ApplicationWindow {
 					dir = kf.kf.get_string("iorcalc", "in-dir");
 				} catch {};
 
-				var fc = IChooser.chooser(this, dir, Gtk.FileChooserAction.OPEN);
-                fc.select_multiple = true;
-                fc.present();
-				fc.response.connect((result) => {
-						if (result== Gtk.ResponseType.ACCEPT) {
-                            var files = fc.get_files();
-                            for(var j = 0; j < files.get_n_items(); j++) {
+				var fd = IChooser.chooser(dir);
+				fd.open_multiple.begin (this, null, (o,r) => {
+						try {
+							var files = fd.open_multiple.end(r);
+							  for(var j = 0; j < files.get_n_items(); j++) {
                                 var gfile = files.get_item(j) as File;
-                                var fn = gfile.get_path ();
-                                if (j == 0) {
-                                    var dn = Path.get_dirname(fn);
-                                    if (dn != null) {
-                                        kf.kf.set_string("iorcalc", "in-dir", dn);
-                                    }
-                                    filename = fn;
-                                    ioropen(filename);
-                                    textview.buffer.text = "";
-                                } else {
-                                    load_file(fn);
-                                }
-                            }
-                        }
-						fc.close();
+								if (gfile != null) {
+									var fn = gfile.get_path ();
+									if (j == 0) {
+										var dn = gfile.get_parent();
+										if (dn != null) {
+											kf.kf.set_string("iorcalc", "in-dir", dn.get_path());
+										}
+										filename = fn;
+										ioropen(filename);
+										textview.buffer.text = "";
+									} else {
+										load_file(fn);
+									}
+								} else {
+									stderr.printf("filedialog returns NULL\n");
+								}
+							  }
+						} catch {}
 					});
 			});
         add_action(aq);
@@ -112,7 +113,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 				var a = new AboutDialog();
 				a.version = IORCALC_VERSION_STRING;
 				a.authors = {"Jonathan Hudson <jh+ior@daria.co.uk>"};
-				a.copyright = "(c) Jonathan Hudson 1984-2022";
+				a.copyright = "(c) Jonathan Hudson 1984-2023";
 				a.license_type = License.GPL_3_0;
 				a.program_name = "IORCalc";
 				a.website = "https://github.com/stronnag/IORCalc";
@@ -249,16 +250,7 @@ public class IORWindow : Gtk.ApplicationWindow {
     }
 
 	public void set_target(Gtk.Widget w, bool active) {
-		string css;
-		if (active) {
-			css =  "textview { border-style: dotted; border-color: @borders; border-width: 4px; }";
-		} else {
-			css =  "textview { border-style: none; }";
-		}
-		var provider = new CssProvider();
-		Util.load_provider_string(ref provider, css);
-		var stylec = w.get_style_context();
-		stylec.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+		w.set_name(active ? "borderattn" : "bordernormal");
 	}
 
 	private bool valid_file(string? uri) {
@@ -334,25 +326,18 @@ public class IORWindow : Gtk.ApplicationWindow {
 		try {
 			dir = kf.kf.get_string("iorcalc", "out-dir");
 		} catch {};
-		var fc = IChooser.chooser(this, dir, Gtk.FileChooserAction.SAVE);
-        fc.add_choice("SFORMAT", "Format",
-                              {"j", "b"},
-                              {"JSON", "Binary"});
-
-
-        fc.present();
-		fc.response.connect((result) => {
-				if (result== Gtk.ResponseType.ACCEPT) {
-					var fn = fc.get_file().get_path ();
-					var dn = fc.get_current_folder().get_path();
+		var fd = IChooser.chooser(dir);
+		fd.save.begin (this, null, (o,r) => {
+				try {
+					var fh = fd.save.end(r);
+					var fn = fh.get_path ();
+					var dn = fh.get_parent();
 					if (dn != null) {
-						kf.kf.set_string("iorcalc", "out-dir", dn);
+						kf.kf.set_string("iorcalc", "out-dir", dn.get_path());
 					}
 					filename = fn;
-                    var sfmt = fc.get_choice("SFORMAT");
-					IORIO.save_file(filename, udata, sfmt);
-				}
-				fc.close();
+					IORIO.save_file(filename, udata, "j");
+				} catch {}
 			});
 	}
 

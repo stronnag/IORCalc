@@ -167,35 +167,38 @@ class IORPrint : Object {
         }
 	}
 
+	/*
+	  FIXME
+	  fc.set_preview_text("IOR LIKE IT'S 1988 AGAIN - PRINTER FONT");
+	*/
 	public void do_font(Window? w) {
 		var window = new Gtk.Window();
+		window.title = "Printer Font Selection";
 		window.set_modal(true);
 		window.set_transient_for(w);
-		window.title = "Printer Font Selection";
-		var fc = new Gtk.FontButton();
-		fc.set_font_desc(fdesc);
-		fc.set_modal(true);
-		fc.set_use_font(true);
-		fc.title = "Select printer font";
-		fc.set_preview_text("IOR LIKE IT'S 1988 AGAIN - PRINTER FONT");
-		fc.set_filter_func((f1,f2) => {
-				if(f1.is_monospace()) {
-					var desc = f2.describe();
+		var fd = new Gtk.FontDialog();
+		fd.language = Pango.Language.from_string("en");
+		var fdb = new Gtk.FontDialogButton(fd);
+		fdb.font_desc = fdesc;
+		fd.title = "Printer Font";
+		fd.filter  = new Gtk.CustomFilter((o) => {
+				var desc = ((Pango.FontFace)o).describe();
+				var fam =  ((Pango.FontFace)o).get_family();
+				if (fam.is_monospace()) {
 					if (desc.get_style() == Pango.Style.NORMAL &&
-						desc.get_weight() == Pango.Weight.NORMAL) {
+						desc.get_weight() == Pango.Weight.NORMAL)
 						return true;
-					}
 				}
-				return false;
+				 return false;
 			});
 
-		fc.font_set.connect(() => {
-				fdesc = fc.get_font_desc();
+		fdb.notify.connect(() => {
+				fdesc = fdb.font_desc;
 				kf.set_string ("iorcalc", "pr-font", fdesc.to_string());
 				font_changed(fdesc.get_family());
 			});
 
-		window.set_child (fc);
+		window.set_child (fdb);
 		window.present();
 	}
 }
