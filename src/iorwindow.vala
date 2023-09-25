@@ -102,9 +102,25 @@ public class IORWindow : Gtk.ApplicationWindow {
 					textview.buffer.insert(ref iter, s1, -1);
 				}
 				show_cert.sensitive = true;
-                if(show_cert.sensitive)
+                if(show_cert.sensitive) {
+                    set_menu_state("cert", true);
                     set_menu_state("plot", true);
+				}
 				FileUtils.unlink(tfn);
+			});
+        add_action(aq);
+
+		aq = new GLib.SimpleAction("cert", null);
+        aq.activate.connect(() => {
+				var fn = Util.mktempname();
+				IORData.pcert(udata, cdata, fn, 1);
+				var cw = new CertWindow(this, kf, udata, cdata);
+				toggle_cert_actions(false);
+				cw.close_request.connect(() => {
+						toggle_cert_actions(true);
+						return false;
+					});
+				cw.load_file(fn);
 			});
         add_action(aq);
 
@@ -146,6 +162,7 @@ public class IORWindow : Gtk.ApplicationWindow {
         add_action(aq);
 
 		set_menu_state("plot", false);
+		set_menu_state("cert", false);
 
         set_icon_name("iorcalc");
 
@@ -166,19 +183,8 @@ public class IORWindow : Gtk.ApplicationWindow {
 		run_calc = new Gtk.Button.with_label("Calculate Rating");
 		run_calc.set_action_name("win.calc");
 
-		show_cert = new Gtk.Button.with_label("Show Certificate");
-		show_cert.sensitive = false;
-		show_cert.clicked.connect(() => {
-				var fn = Util.mktempname();
-				IORData.pcert(udata, cdata, fn, 1);
-				var cw = new CertWindow(this, kf, udata, cdata);
-				toggle_cert_actions(false);
-				cw.close_request.connect(() => {
-						toggle_cert_actions(true);
-						return false;
-					});
-				cw.load_file(fn);
-			});
+		show_cert = new Gtk.Button.with_label("View Certificate");
+		show_cert.set_action_name("win.cert");
 
 		bbox.hexpand = true;
  		run_calc.hexpand = true;
@@ -283,6 +289,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 		run_calc.sensitive = act;
 		show_cert.sensitive = act;
         set_menu_state("plot", act);
+        set_menu_state("cert", act);
 
 	}
 
@@ -430,6 +437,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 							ent.set_text(t);
 							show_cert.sensitive = false;
                             set_menu_state("plot", false);
+                            set_menu_state("cert", false);
                             var is_ok = IORData.is_data_valid(udata);
 							set_menu_state("calc", is_ok);
 						}
