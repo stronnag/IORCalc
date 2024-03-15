@@ -29,6 +29,7 @@ configure_file(
 )
 configuration_inc = include_directories('.','src')
 
+subdir('valaopts')
 subdir('meson')
 subdir('data')
 subdir('src')
@@ -48,7 +49,7 @@ executable(
     meson.get_compiler('c').find_library('m'),
   ],
   include_directories : configuration_inc,
-  c_args: '-D_GNU_SOURCE',
+  c_args: [ '-D_GNU_SOURCE', vcargs],
   vala_args : vopts,
   link_with : staticlib,
   install: true,
@@ -70,7 +71,7 @@ executable(
     meson.get_compiler('c').find_library('m'),
   ],
   include_directories : configuration_inc,
-  c_args: '-D_GNU_SOURCE',
+  c_args: [ '-D_GNU_SOURCE', vcargs],
   vala_args : vopts,
   link_with : staticlib,
   build_by_default: false,
