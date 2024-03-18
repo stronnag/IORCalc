@@ -51,7 +51,8 @@ executable(
   include_directories : configuration_inc,
   c_args: [ '-D_GNU_SOURCE', vcargs],
   vala_args : vopts,
-  link_with : staticlib,
+  link_with : dynalib,
+  install_rpath: get_option('prefix') + '/lib',
   install: true,
   gui_app: true,
 )

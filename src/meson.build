@@ -18,12 +18,13 @@ staticlib = static_library('iorcalc',
 			   c_args: '-D_GNU_SOURCE',
                            install : true)
 
-#dynalib = shared_library('iorcalc',
-#                         libsrc,
-#			 c_args: '-D_GNU_SOURCE',
-#			 version: '001.002.001',
-#			 dependencies: [meson.get_compiler('c').find_library('m')],
-#			 install : false)
+dynalib = shared_library('iorcalc',
+                         libsrc,
+			 c_args: '-D_GNU_SOURCE',
+			 version: '000.000.000',
+                         install_rpath: get_option('prefix') + '/lib',
+			 dependencies: [meson.get_compiler('c').find_library('m')],
+			 install : true)
 
 if host_os == 'windows'
   windows = import('windows')
