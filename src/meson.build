@@ -11,13 +11,16 @@ libsrc = files('ioralloc.c', 'gluefuncs.c', 'calc_hull.c', 'calc_rig.c', 'calc_r
 	       'cert.c', 'iorutil.c', 'iorconst.c', 'report.c', 'plotdata.c')
 
 iorsrcs = files('iorcalc.vala', 'iorwindow.vala', 'iorprint.vala', 'iorcertwin.vala',
-		'iorsettings.vala', 'jsonio.vala', 'plotwindow.vala', 'iormisc.vala')
+		'iorsettings.vala', 'plotwindow.vala', 'iormisc.vala')
 
 dynalib = both_libraries('iorcalc',
-                         libsrc,
+                         [libsrc, 'jsonio.vala'],
 			 c_args: '-D_GNU_SOURCE',
                          install_rpath: get_option('prefix') + '/lib',
-			 dependencies: [meson.get_compiler('c').find_library('m')],
+			 dependencies: [    dependency('gio-2.0'),
+                                            dependency('json-glib-1.0'),
+                                            meson.get_compiler('c').find_library('m')],
+                         install_dir: [true, true, true],
 			 install : true)
 
 if host_os == 'windows'

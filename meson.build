@@ -35,16 +35,18 @@ subdir('data')
 subdir('src')
 subdir('samples')
 
-executable(
-  meson.project_name(),
-  wresources,
-  iorsrcs,
-  dependencies: [
+gdeps = [
     dependency('gtk4'),
     dependency('gio-2.0'),
     dependency('json-glib-1.0'),
     dependency('pangocairo'),
-    deps,
+]
+
+executable(
+  meson.project_name(),
+  wresources,
+  iorsrcs,
+  dependencies: [ gdeps, deps,
     meson.get_compiler('vala').find_library('posix'),
     meson.get_compiler('c').find_library('m'),
   ],

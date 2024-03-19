@@ -6,29 +6,15 @@ Just in case one feels the urge to become a retro IOR certificate authority, her
 
 ## Usage
 
-In addition to the files here, you either need from the main source (`src`) directory:
+In addition to the files here, you either need to have installed the project, so the iorcalc library, header files and 'vapi' (vala definitions) are available.
 
-* `ior.h`
-* `iorext.h`
-* `vapi/ior.vapi` (into a local `vapi/` directory)
-* `jsonio.vala`
+If the files are installed to a local directory, rather than somewhere on the system search path, the Makefile uses `prefix`.
 
-or set some variables for the Makefile:
-
-* `INCDIR` : Where to find the `ior*.h` include files
-* `SRCDIR` : Where to find `jsonio.vala` and the `vapi` directory
-
-And in either case, set the `LIBDIR` variable to where `libiorcalc.a` may be found, if not in `$HOME/.local/lib`, e..g:
 
 ```
-make LIBDIR=/usr/local/lib
-```
-
-or, assuming the `iorcalc` directory was `~/Projects/iorcalc`, without any copying:
-
-```
-make LIBDIR=~/Projects/iorcalc/build/src INCDIR=~/Projects/iorcalc/src SRCDIR=~/Projects/iorcalc/src
-
+make prefix=~/.local
+#
+make prefix=/usr/local
 ```
 
 The examples are:

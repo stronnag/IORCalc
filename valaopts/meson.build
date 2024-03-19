@@ -5,5 +5,5 @@ if meson.get_compiler('c').get_id() == 'clang'
 endif
 
 if meson.get_compiler('c').get_id() == 'gcc'
-  vcargs += ['-Wno-incompatible-pointer-types',  '-Wno-address', '-Wno-implicit-function-declaration', '-Wno-discarded-qualifiers', '-Wno-tautological-compare']
+  vcargs += [ '-Wno-incompatible-pointer-types',  '-Wno-address', '-Wno-implicit-function-declaration', '-Wno-discarded-qualifiers', '-Wno-tautological-compare' ]
 endif

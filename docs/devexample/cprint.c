@@ -33,6 +33,8 @@ int main(int argc, char **argv) {
     }
     free(u);
     free(c);
+  } else {
+    fprintf(stderr, "cprint file.iorbin\n");
   }
   return 0;
 }
