@@ -8,14 +8,17 @@
 
 ## Set this if elsewhere
 
-LIBDIR ?=$$HOME/.local/lib
-INCDIR ?=.
+prefix ?= $$HOME/.local
+
+LIBDIR ?= $(prefix)/lib
+INCDIR ?= $(prefix)/include
 SRCDIR ?=.
+VAPIDIR = $(prefix)/share/vala/vapi
 
 all: vprint vconv cprint
 
 VALAC=valac
-VOPTS=-X -D_GNU_SOURCE -X -Ofast --vapidir=$(SRCDIR)/vapi --includedir=$(INCDIR)/ -X -I$(INCDIR)/
+VOPTS=-X -D_GNU_SOURCE -X -Ofast --vapidir=$(VAPIDIR) --includedir=$(INCDIR)/ -X -I$(INCDIR)/
 VLOPTS=-X -lm -X -L$(LIBDIR) -X -liorcalc
 PKGS=--pkg ior --pkg json-glib-1.0
 VCSRC=$(SRCDIR)/jsonio.vala vconv.vala
