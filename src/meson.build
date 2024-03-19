@@ -13,15 +13,9 @@ libsrc = files('ioralloc.c', 'gluefuncs.c', 'calc_hull.c', 'calc_rig.c', 'calc_r
 iorsrcs = files('iorcalc.vala', 'iorwindow.vala', 'iorprint.vala', 'iorcertwin.vala',
 		'iorsettings.vala', 'jsonio.vala', 'plotwindow.vala', 'iormisc.vala')
 
-staticlib = static_library('iorcalc',
-                           libsrc,
-			   c_args: '-D_GNU_SOURCE',
-                           install : true)
-
-dynalib = shared_library('iorcalc',
+dynalib = both_libraries('iorcalc',
                          libsrc,
 			 c_args: '-D_GNU_SOURCE',
-			 version: '000.000.000',
                          install_rpath: get_option('prefix') + '/lib',
 			 dependencies: [meson.get_compiler('c').find_library('m')],
 			 install : true)
@@ -32,3 +26,6 @@ if host_os == 'windows'
 endif
 
 vopts += '--define=OS_' + host_os
+
+install_headers('ior.h', 'iorext.h')
+install_data('vapi/ior.vapi', install_dir : get_option('datadir') / 'vala' / 'vapi')
