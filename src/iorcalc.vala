@@ -97,6 +97,11 @@ public class IORCalc : Gtk.Application {
 	}
 
 	public static int main (string[] args) {
+		if(Environment.get_variable("GSK_RENDERER") == null) {
+			if (Environment.get_variable("LOCALAPPDATA") != null) { // Windows test
+				Environment.set_variable("GSK_RENDERER", "cairo" ,true);
+			}
+		}
         var ior = new IORCalc ();
         ior.run (args);
 		ior.save_settings();
