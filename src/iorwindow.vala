@@ -198,7 +198,6 @@ public class IORWindow : Gtk.ApplicationWindow {
 		vbox.append (scrolled);
 		vbox.append (bbox);
 		Util.init_css(textview);
-#if !OS_freebsd
 		var droptgt = new Gtk.DropTarget(typeof (Gdk.FileList), Gdk.DragAction.COPY);
 		droptgt.drop.connect((tgt, value, x, y) => {
 				set_target(textview, false);
@@ -211,26 +210,6 @@ public class IORWindow : Gtk.ApplicationWindow {
 				}
 				return true;
 			});
-#else
-		// Incomplete definition of Gdk.FileList (no get_files()).
-		var droptgt = new Gtk.DropTarget(typeof (string), Gdk.DragAction.COPY);
-		droptgt.on_drop.connect((tgt, value, x, y) => {
-				set_target(textview, false);
-				if(value.type() == typeof (string)) {
-					foreach(var u in ((string)value).split( "\r\n")) {
-						if (u!= null && u.length > 0) {
-							try {
-								var fn = Filename.from_uri(u);
-                                load_file(fn);
-							} catch (Error e) {
-								stderr.printf("drop: %s %s\n", u, e.message);
-							}
-						}
-					}
-				}
-				return true;
-			});
-#endif
 		droptgt.accept.connect((d) => {
 				set_target(textview, true);
 				return true;
