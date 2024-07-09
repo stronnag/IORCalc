@@ -197,7 +197,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 
 		vbox.append (scrolled);
 		vbox.append (bbox);
-
+		Util.init_css(textview);
 #if !OS_freebsd
 		var droptgt = new Gtk.DropTarget(typeof (Gdk.FileList), Gdk.DragAction.COPY);
 		droptgt.drop.connect((tgt, value, x, y) => {
