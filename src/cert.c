@@ -53,7 +53,7 @@ void ior_cert(ior_rec_t *u, calc_rec_t *c, cert_pages_t *cp) {
   if(asprintf(&cptr, " * %-24s*       DESIGNER : %s", u->sail, u->designer) != -1)
     cp->page1[line++] = cptr;
 
-  if(asprintf(&cptr, " * RATING %7.2f  FEET    *       BUILDER  : %s", c->ra, u->builder) != -1)
+  if(asprintf(&cptr, " * RATING %7.2f  FEET    *       BUILDER  : %s", c->rtfa, u->builder) != -1)
     cp->page1[line++] = cptr;
 
   if(asprintf(&cptr, " ***************************       RIG      : %s", u->rig) != -1)
