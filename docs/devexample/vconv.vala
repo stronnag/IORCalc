@@ -5,6 +5,8 @@ int main (string?[] args) {
         var fp = FileStream.open(fn,"w");
         fp.write({'i','o','r','8','8',0});
         fp.write((uint8[])udata);
-    }
+    } else {
+		stderr.printf("vconv file.json\n");
+	}
     return 0;
 }

@@ -14,6 +14,8 @@ int main (string?[] args) {
                 IORData.pcert(u, c,fn,1);
             }
         }
-    }
+    } else {
+		stderr.printf("vprint file.iorbin\n");
+	}
     return 0;
 }

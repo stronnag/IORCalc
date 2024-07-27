@@ -25,6 +25,7 @@ public class IORCalc : Gtk.Application {
 
 	private void set_actions() {
   		set_accels_for_action ("win.calc", { "<Ctrl>r" });
+  		set_accels_for_action ("win.cert", { "<Ctrl>v" });
   		set_accels_for_action ("win.plot", { "<Ctrl>p" });
 		set_accels_for_action ("win.save", { "<Ctrl>s" });
 		set_accels_for_action ("win.open", { "<Ctrl>o" });
@@ -95,6 +96,11 @@ public class IORCalc : Gtk.Application {
 	}
 
 	public static int main (string[] args) {
+		if(Environment.get_variable("GSK_RENDERER") == null) {
+			if (Environment.get_variable("LOCALAPPDATA") != null) { // Windows test
+				Environment.set_variable("GSK_RENDERER", "cairo" ,true);
+			}
+		}
         var ior = new IORCalc ();
         ior.run (args);
 		ior.save_settings();

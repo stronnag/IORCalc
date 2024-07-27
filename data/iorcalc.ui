@@ -31,6 +31,11 @@
 	<attribute name="accel">&lt;Ctrl&gt;r</attribute>
       </item>
       <item>
+        <attribute name="label">View Certificate</attribute>
+        <attribute name="action">win.cert</attribute>
+	<attribute name="accel">&lt;Ctrl&gt;v</attribute>
+      </item>
+      <item>
         <attribute name="label">Plot Sections</attribute>
         <attribute name="action">win.plot</attribute>
 	<attribute name="accel">&lt;Ctrl&gt;p</attribute>

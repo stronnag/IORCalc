@@ -11,19 +11,29 @@ libsrc = files('ioralloc.c', 'gluefuncs.c', 'calc_hull.c', 'calc_rig.c', 'calc_r
 	       'cert.c', 'iorutil.c', 'iorconst.c', 'report.c', 'plotdata.c')
 
 iorsrcs = files('iorcalc.vala', 'iorwindow.vala', 'iorprint.vala', 'iorcertwin.vala',
-		'iorsettings.vala', 'jsonio.vala', 'plotwindow.vala', 'iormisc.vala')
+		'iorsettings.vala', 'plotwindow.vala', 'iormisc.vala')
 
-staticlib = static_library('iorcalc',
-                           libsrc,
-			   c_args: '-D_GNU_SOURCE',
-                           install : true)
+libargs = {
+  'sources': [libsrc, 'jsonio.vala'],
+  'c_args': '-D_GNU_SOURCE',
+  'dependencies': [    dependency('gio-2.0'),
+                       dependency('json-glib-1.0'),
+                       meson.get_compiler('c').find_library('m')],
+  'install': true
+}
 
-#dynalib = shared_library('iorcalc',
-#                         libsrc,
-#			 c_args: '-D_GNU_SOURCE',
-#			 version: '001.002.001',
-#			 dependencies: [meson.get_compiler('c').find_library('m')],
-#			 install : false)
+if meson.version().version_compare('>= 1.2.0')
+  libargs += { 'install_dir': [ get_option('prefix') / 'lib', true, true] }
+else
+  libargs += { 'install_dir': get_option('prefix') / 'lib', }
+  # It will be necessary to install the *.h and *.vapi manually if required.
+endif
+
+if dynalib
+  iorlib = both_libraries('iorcalc', kwargs: libargs)
+else
+  iorlib = static_library('iorcalc', kwargs: libargs)
+endif
 
 if host_os == 'windows'
   windows = import('windows')
@@ -31,3 +41,6 @@ if host_os == 'windows'
 endif
 
 vopts += '--define=OS_' + host_os
+
+install_headers('ior.h', 'iorext.h')
+install_data('vapi/ior.vapi', install_dir : get_option('datadir') / 'vala' / 'vapi')

@@ -1,36 +1,24 @@
 using Gtk;
 
 namespace IChooser {
-	Gtk.FileChooserDialog chooser(Gtk.Window w, string? _fn,
-								   Gtk.FileChooserAction action, string fty="json") {
-		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog (
-			"IOR Data File",
-			w, action,
-			"_Cancel",
-			Gtk.ResponseType.CANCEL,
-			(action == Gtk.FileChooserAction.SAVE) ? "_Save" : "_Open",
-			Gtk.ResponseType.ACCEPT);
-
-		fc.set_modal(true);
+	Gtk.FileDialog chooser(string? _fn, string fty="json") {
+		Gtk.FileDialog fd = new Gtk.FileDialog();
 		if (_fn != null) {
-			try {
-				var fl = File.new_for_path (_fn);
-				fc.set_current_folder(fl);
-			} catch (Error e) {
-				stderr.printf(" Chooser %s\n", e.message);
-			}
+			var fl = File.new_for_path (_fn);
+			fd.initial_folder = fl;
 		}
-		fc.select_multiple = false;
-		var filter = new Gtk.FileFilter ();
+		fd.title = "IORCalc";
+		var ls = new GLib.ListStore(typeof(Gtk.FileFilter));
+		var filter = new Gtk.FileFilter();
 		if(fty == "json") {
             filter.set_filter_name ("IORCalc files");
 			filter.add_pattern ("*.iorbin");
 			filter.add_pattern ("*.json");
-            fc.add_filter (filter);
+            ls.append(filter);
             filter = new Gtk.FileFilter ();
 			filter.set_filter_name ("JSON files");
 			filter.add_pattern ("*.json");
-            fc.add_filter (filter);
+			ls.append(filter);
             filter = new Gtk.FileFilter ();
 			filter.set_filter_name ("Binary (raw)");
 			filter.add_pattern ("*.iorbin");
@@ -38,12 +26,13 @@ namespace IChooser {
 			filter.set_filter_name ("Text files");
 			filter.add_pattern ("*.txt");
 		}
-		fc.add_filter (filter);
+		ls.append(filter);
 		filter = new Gtk.FileFilter ();
 		filter.set_filter_name ("All Files");
 		filter.add_pattern ("*");
-		fc.add_filter (filter);
-		return fc;
+		ls.append(filter);
+		fd.set_filters(ls);
+		return fd;
 	}
 }
 
@@ -55,7 +44,7 @@ namespace Util {
 		return s;
 	}
 
-	public void load_provider_string(ref Gtk.CssProvider provider, string str) {
+	private  void load_provider_string(ref Gtk.CssProvider provider, string str) {
 #if CSS_USE_LOAD_DATA
         provider.load_from_data(str.data);
 #elif CSS_USE_LOAD_DATA_STR_LEN
@@ -63,6 +52,16 @@ namespace Util {
 #else
         provider.load_from_string(str);
 #endif
+	}
+
+	public void init_css(Gtk.Widget w) {
+		var css = """
+#borderattn { border-style: dotted; border-color: @borders; border-width: 4px; }
+#bordernormal { border-style: none; }
+""";
+		var provider = new CssProvider();
+		Util.load_provider_string(ref provider, css);
+		w.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 	}
 }
 

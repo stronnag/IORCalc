@@ -69,7 +69,7 @@ Once sufficient data is entered to calculate the rating, this may be invoked fro
 After the calculation is completed:
 
 * A summary is presented below the input form
-* The [Plot Data](#plot-data) menu item and [Show Certificate](#viewing-the-certificate) button are enabled.
+* The [Plot Data](#plot-data) menu item and [View Certificate](#viewing-the-certificate) button/menu item are enabled.
 
 It is possible that the data sanity checks are insufficient, and invalid or missing user entered data could cause the application to crash. In this case, your data will be saved as `$TMP/.iorcalc-save.json` (`$TMP` represents the operating system's temporary directory, typically `/tmp` on Linux / FreeBSB).
 
@@ -140,6 +140,6 @@ The following unofficial sources have been found:
 
 ## Author, Licence
 
-(c) Jonathan Hudson 1984-2022.
+(c) Jonathan Hudson 1984-2024.
 
 GPL3 or later.

@@ -43,19 +43,21 @@ public class CertWindow : Gtk.Window {
 
 		var saq = new GLib.SimpleAction("save",null);
         saq.activate.connect(() => {
-				var fc = IChooser.chooser(this, null, Gtk.FileChooserAction.SAVE, "txt");
+				var fd = IChooser.chooser(null, "txt");
+				/*
                 fc.add_choice("PAGING", "Paging",
                               {"2", "1"},
                               {"Two Pages", "Single Page"});
-                fc.present();
-                fc.response.connect((result) => {
-						if (result== Gtk.ResponseType.ACCEPT) {
-                            var pchoice = fc.get_choice("PAGING");
-                            var fn = fc.get_file().get_path ();
-                            int pg = (pchoice == "1") ? 1 : 2;
+				*/
+				fd.save.begin (this, null, (o,r) => {
+						try {
+							var fh = fd.save.end(r);
+							var fn = fh.get_path ();
+							//                            var pchoice = fc.get_choice("PAGING");
+                            //int pg = (pchoice == "1") ? 1 : 2;
+							int pg = 2;
 							IORData.pcert(u, c, fn, pg);
-						}
-						fc.close();
+						} catch {}
 					});
             });
         dg.add_action(saq);
@@ -111,10 +113,10 @@ public class CertWindow : Gtk.Window {
 	}
 
 	private void set_cert_text_font(string fontname) {
-		var css = "textview {font-family: \"%s\",monospace;}".printf(fontname);
+		var css = "#printmono {font-family: \"%s\",monospace;}".printf(fontname);
 		var provider = new CssProvider();
 		Util.load_provider_string(ref provider, css);
-		var stylec = certview.get_style_context();
-		stylec.add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+		Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default(), provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+		certview.set_name("printmono");
 	}
 }
