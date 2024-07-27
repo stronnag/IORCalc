@@ -1,5 +1,5 @@
 ## This makefile requires that you have copied the following main build files
-## into this directory:
+## into this directory, or use the system installed files.
 #
 # ior.h
 # iorext.h

@@ -140,6 +140,6 @@ The following unofficial sources have been found:
 
 ## Author, Licence
 
-(c) Jonathan Hudson 1984-2023.
+(c) Jonathan Hudson 1984-2024.
 
 GPL3 or later.
