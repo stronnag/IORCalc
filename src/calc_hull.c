@@ -192,9 +192,13 @@ void calc_hull(ior_rec_t *u, calc_rec_t *c) {
 
   c->d = 1.3 * c->mdia + 0.9 * c->fdic + 0.055 * (3.0 * c->foc - c->aocc) + (c->l + get_constant(u->munit, 0)) / 30.0;
 
-  c->bdr = pow((2.165 * pow(c->l * get_constant(u->munit, 6), 0.525) - get_constant(u->munit, 19)), 0.375) /
-           pow(c->l * u->b * c->mdia * get_constant(u->munit, 6), 0.125);
-
+  if (u->munit == 0) {
+    c->bdr = pow((2.165 * pow(c->l , 0.525) - 5.85), 0.375) /
+      pow((c->l * u->b * c->mdia), 0.125);
+  } else {
+    c->bdr = pow((1.23127 * pow(c->l , 0.525) - 1.783), 0.375) /
+      pow((c->l * u->b * c->mdia), 0.125);
+  }
   c->dlf = fmin(1.1, 1 + 5.7 * pow((fmax(c->bdr, 1.0) - 1.0), 1.75));
 
   c->fb = 0.057 * c->l + get_constant(u->munit, 1);
