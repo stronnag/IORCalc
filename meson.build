@@ -1,4 +1,4 @@
-project('iorcalc', 'vala', 'c', version : '1.4.0')
+project('iorcalc', 'vala', 'c', version : '1.3.2')
 
 show_deprecated = get_option('deprecations')
 if show_deprecated  == false
