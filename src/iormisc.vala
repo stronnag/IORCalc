@@ -54,14 +54,15 @@ namespace Util {
 #endif
 	}
 
-	public void init_css(Gtk.Widget w) {
+	public void init_css() {
 		var css = """
-#borderattn { border-style: dotted; border-color: @borders; border-width: 4px; }
-#bordernormal { border-style: none; }
+.borderattn { border-style: dotted; border-color: @borders; border-width: 4px; }
+.bordernormal { border-style: none; }
 """;
 		var provider = new CssProvider();
 		Util.load_provider_string(ref provider, css);
-		w.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+		Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+
 	}
 }
 

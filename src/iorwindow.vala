@@ -197,7 +197,7 @@ public class IORWindow : Gtk.ApplicationWindow {
 
 		vbox.append (scrolled);
 		vbox.append (bbox);
-		Util.init_css(textview);
+		Util.init_css();
 		var droptgt = new Gtk.DropTarget(typeof (Gdk.FileList), Gdk.DragAction.COPY);
 		droptgt.drop.connect((tgt, value, x, y) => {
 				set_target(textview, false);
@@ -235,7 +235,13 @@ public class IORWindow : Gtk.ApplicationWindow {
     }
 
 	public void set_target(Gtk.Widget w, bool active) {
-		w.set_name(active ? "borderattn" : "bordernormal");
+		if(active) {
+			w.add_css_class("borderattn");
+			w.remove_css_class("bordernormal");
+		} else {
+			w.remove_css_class("borderattn");
+			w.add_css_class("bordernormal");
+		}
 	}
 
 	private bool valid_file(string? uri) {
