@@ -1,4 +1,6 @@
-# IORCalc - Calculate IOR Ratings
+# Migrated to [codeberg.org](https://codeberg.org/stronnag/IORCalc)
+
+## IORCalc - Calculate IOR Ratings
 
 ## Features
 
